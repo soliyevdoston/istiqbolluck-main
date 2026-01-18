@@ -1,20 +1,20 @@
 export const missions = [
   {
     id: 1,
-    title: "Sifatli Ta'lim",
-    desc: "Har bir o'quvchining salohiyatini maksimal darajada yuzaga chiqarish.",
+    title: "Sifatli ta’lim",
+    desc: "Biz har bir o‘quvchining bilim va qobiliyatini to‘liq rivojlantirishga intilamiz. Darslar nafaqat nazariy bilim, balki amaliy ko‘nikmalarni ham o‘z ichiga oladi. Shu orqali o‘quvchilar o‘z imkoniyatlarini maksimal darajada namoyon eta oladi.",
     color: "#39B54A",
   },
   {
     id: 2,
-    title: "Liderlik",
-    desc: "Kelajak boshqaruvchilarini bugundan shakllantirish.",
+    title: "Liderlik tarbiyasi",
+    desc: "Kelajak boshqaruvchilarini bugundan shakllantirish bizning vazifamiz. O‘quvchilarni mas’uliyat, muloqot va mustaqil fikrlash ko‘nikmalari bilan boyitamiz. Shu tarzda ular jamoada faol va yetakchi bo‘lishga tayyor bo‘ladi.",
     color: "#2E3192",
   },
   {
     id: 3,
-    title: "Innovatsiya",
-    desc: "Eng zamonaviy texnologiyalar va metodikalarni qo'llash.",
+    title: "Innovatsion yondashuv",
+    desc: "Ta’lim jarayonida eng so‘nggi texnologiyalar va ilg‘or metodlarni qo‘llashga e’tibor qaratamiz. Bu o‘quvchilarga zamonaviy dunyoda raqobatbardosh bo‘lish imkonini beradi. Shu bilan birga ular ijodiy va innovatsion fikrlashni rivojlantiradi.",
     color: "#E54D2E",
   },
 ];

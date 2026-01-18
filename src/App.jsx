@@ -20,7 +20,6 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/life" element={<SchoolLife />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
-        {/* Boshqa sahifalarni ham shu tarzda qo'shasiz */}
       </Routes>
 
       <AIChat />

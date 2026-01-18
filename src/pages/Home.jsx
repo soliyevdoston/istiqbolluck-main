@@ -578,7 +578,7 @@ export default function Home() {
               <iframe
                 title="Map"
                 src={branches.tashkent.map}
-                className="w-full h-full grayscale dark:invert dark:opacity-70"
+                className="w-full h-full grayscale-0 dark:invert dark:opacity-70"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"

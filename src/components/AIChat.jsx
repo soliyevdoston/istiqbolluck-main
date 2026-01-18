@@ -5,39 +5,131 @@ import { Bot, X, Send } from "lucide-react";
 // 1. MAKTAB HAQIDAGI MA'LUMOTLAR (Shu yerga xohlagancha ma'lumot qo'shing)
 const KNOWLEDGE_BASE = [
   {
-    keywords: ["salom", "assalom", "hello", "hi"],
+    keywords: [
+      "salom",
+      "assalom",
+      "hello",
+      "hi",
+      "salomlar",
+      "assalomu",
+      "helo",
+      "hallo",
+    ],
     reply:
-      "Assalomu alaykum! Istiqbol Luck o'quv markazining virtual yordamchisiman. Sizga qanday yordam bera olaman?",
+      "Assalomu alaykum! Istiqbol Luck o'quv markazining virtual yordamchisiman. Sizga kurslar, narxlar, manzil yoki boshqa ma’lumotlar bo‘yicha yordam bera olaman. Siz nimani bilmoqchisiz?",
   },
   {
-    keywords: ["manzil", "joylashuv", "qayerda", "lokatsiya"],
+    keywords: [
+      "manzil",
+      "joylashuv",
+      "qayerda",
+      "lokatsiya",
+      "adres",
+      "yer",
+      "location",
+      "joy",
+    ],
     reply:
-      "Bizning o'quv markazimiz Farg'ona viloyati, Rishton tumanida joylashgan. Xaritani saytimizning pastki qismida ko'rishingiz mumkin.",
+      "Bizning o'quv markazimiz Farg'ona viloyati, Rishton tumanida joylashgan. Xaritani saytimizning pastki qismida ko'rishingiz mumkin. Agar istasangiz, biz sizga aniq yo‘l-yo‘riqni ham bera olamiz.",
   },
   {
-    keywords: ["tel", "nomer", "telefon", "bog'lanish", "aloqa"],
+    keywords: [
+      "tel",
+      "nomer",
+      "telefon",
+      "bog'lanish",
+      "aloqa",
+      "raqam",
+      "call",
+      "contact",
+    ],
     reply:
-      "Biz bilan bog'lanish uchun raqam: +998 90 123 45 67. Shuningdek, 'Ariza topshirish' formasini to'ldirsangiz, o'zimiz qo'ng'iroq qilamiz.",
+      "Biz bilan bog'lanish uchun telefon raqamimiz: +998 90 123 45 67. Shuningdek, saytimizdagi 'Ariza topshirish' formasini to'ldirsangiz, ma’muriyat siz bilan o'z vaqtida bog‘lanadi.",
   },
   {
-    keywords: ["kurs", "fanlar", "nima o'tiladi", "oqish"],
+    keywords: [
+      "kurs",
+      "fanlar",
+      "nima o'tiladi",
+      "oqish",
+      "ta’lim",
+      "darslar",
+      "o‘quv dasturi",
+      "program",
+      "subjects",
+    ],
     reply:
-      "Bizda asosan DTM imtihonlariga tayyorgarlik (Matematika, Fizika, Ona tili, Tarix) va xorijiy tillar kurslari mavjud.",
+      "Bizda asosan DTM imtihonlariga tayyorgarlik kurslari mavjud: Matematika, Fizika, Ona tili va Tarix. Bundan tashqari, xorijiy tillar (Ingliz tili, Rus tili) va qo‘shimcha fanlar ham o‘tiladi. Har bir kurs o‘quvchining darajasiga mos holda rejalashtiriladi.",
   },
   {
-    keywords: ["narx", "qancha", "tolov", "pul"],
+    keywords: [
+      "narx",
+      "qancha",
+      "tolov",
+      "pul",
+      "fee",
+      "price",
+      "qimmat",
+      "to‘lov",
+    ],
     reply:
-      "Kurslarimiz narxi tanlangan yo'nalish va dars soatlariga bog'liq. Aniq narxni bilish uchun ma'muriyat bilan bog'laning yoki markazimizga tashrif buyuring.",
+      "Kurslarimiz narxi tanlangan yo'nalish, dars soati va guruhga bog'liq. Masalan, DTM tayyorgarlik kurslari va til kurslari narxlari farq qiladi. Aniq narxni bilish uchun markazimizga qo‘ng‘iroq qiling yoki saytimiz orqali ariza qoldiring, biz sizga batafsil ma’lumot beramiz.",
   },
   {
-    keywords: ["dtm", "tahlil", "ball", "natija"],
+    keywords: ["dtm", "tahlil", "ball", "natija", "imtihon", "score", "result"],
     reply:
-      "DTM tahlili bo'limida o'quvchilarimiz o'z ID raqamlarini kiritib, natijalarini va o'sish grafiklarini ko'rishlari mumkin.",
+      "DTM tahlili bo‘limida o‘quvchilarimiz o‘z ID raqamlarini kiritib, natijalarini va o‘sish grafiklarini ko‘rishlari mumkin. Shu bilan birga, har bir fan bo‘yicha kuchli va zaif tomonlaringizni aniqlab, kelajakdagi rivojlanish yo‘lini belgilash imkoniyati mavjud.",
   },
   {
-    keywords: ["rahmat", "raxmat", "ok", "yaxshi", "yahshi", "tushundim"],
+    keywords: [
+      "vaqt",
+      "jadval",
+      "dars vaqti",
+      "schedule",
+      "soatlar",
+      "time",
+      "grafik",
+    ],
     reply:
-      "Arziydi! Yana savollaringiz bo'lsa, bemalol so'rashingiz mumkin. 😊",
+      "Bizning darslar jadvali moslashuvchan bo‘lib, o‘quvchining imkoniyatlariga qarab tuziladi. Siz hafta davomida qaysi kun va soatda dars olishni xohlaysiz? Shu orqali biz eng qulay guruhni tavsiya qilamiz.",
+  },
+  {
+    keywords: [
+      "rahmat",
+      "raxmat",
+      "ok",
+      "yaxshi",
+      "yahshi",
+      "tushundim",
+      "thanks",
+      "thank you",
+    ],
+    reply:
+      "Arziydi! 😊 Agar boshqa savollaringiz bo‘lsa, bemalol so‘rashingiz mumkin. Biz sizga markazdagi kurslar, narxlar, jadval va boshqa ma’lumotlar bo‘yicha batafsil yordam beramiz.",
+  },
+  {
+    keywords: [
+      "internet",
+      "online",
+      "video",
+      "zoom",
+      "darslar onlayn",
+      "virtual",
+    ],
+    reply:
+      "Bizda onlayn darslar ham mavjud. Zoom va boshqa platformalar orqali o‘quvchilar masofadan turib ham ta’lim olishlari mumkin. Shu bilan birga, onlayn resurslar va video materiallar orqali mustaqil o‘rganish imkoniyati mavjud.",
+  },
+  {
+    keywords: [
+      "mukofot",
+      "yutuq",
+      "olimpiada",
+      "medal",
+      "competition",
+      "musobaqa",
+    ],
+    reply:
+      "Maktabimiz o‘quvchilari turli xalqaro va mahalliy musobaqalarda muvaffaqiyatli ishtirok etishadi. Olimpiadalar, tanlovlar va sport musobaqalari orqali ular o‘z salohiyatini namoyon qiladi.",
   },
 ];
 

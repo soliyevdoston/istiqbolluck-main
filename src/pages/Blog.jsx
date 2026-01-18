@@ -52,12 +52,11 @@ export default function Blog() {
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "circOut" }}
                 className="text-6xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tighter dark:text-white uppercase italic"
               >
                 BLOG <span className="text-[#39B54A]">&</span>
                 <br />
-                <span className="text-zinc-200 dark:text-zinc-800">
+                <span className="text-zinc-400 dark:text-zinc-800">
                   MAQOLALAR
                 </span>
               </motion.h1>
