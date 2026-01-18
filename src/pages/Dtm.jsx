@@ -29,9 +29,9 @@ import jsPDF from "jspdf";
 
 // 1. DEFAULT NAMUNAVIY MA'LUMOT (189 BALL)
 const DEFAULT_STUDENT = {
-  name: "Mamasodiqova Gulchehra",
+  name: "Solijonov Dostonbek",
   class: "11-sinf",
-  direction: "Filologiya",
+  direction: "Aniq",
   rank: "Top 1",
   percentile: 99.9,
   history: [
@@ -53,7 +53,7 @@ const DEFAULT_STUDENT = {
 
 export default function DtmPremium() {
   const [searchId, setSearchId] = useState("");
-  const [currentId, setCurrentId] = useState("7015"); // Boshlang'ich ID
+  const [currentId, setCurrentId] = useState("0000"); // Boshlang'ich ID
   const [testIndex, setTestIndex] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -63,6 +63,8 @@ export default function DtmPremium() {
   // GOOGLE SHEETS SETTINGS
   const SHEET_ID = "1maHii6PdtN3aHvDOS3jMvTbQX11_bnEWOWfjyIVfyGU";
   const SHEET_NAME = "dtms";
+
+  // ... (kodning boshlanishi bir xil)
 
   useEffect(() => {
     const fetchSheetsData = async () => {
@@ -74,6 +76,10 @@ export default function DtmPremium() {
         const rows = json.table.rows;
 
         const formatted = {};
+
+        // Raqamlarni 1 ta xonagacha yaxlitlash uchun yordamchi funksiya
+        const roundNum = (num) => Math.round(parseFloat(num || 0) * 10) / 10;
+
         rows.forEach((row) => {
           const c = row.c;
           const id = c[2]?.v ? String(c[2].v) : null;
@@ -93,36 +99,37 @@ export default function DtmPremium() {
           formatted[id].history.push({
             date: c[0]?.f || c[0]?.v || "Noma'lum",
             cert: c[16]?.v || 0,
-            totalBall: c[10]?.v || 0,
+            // JAMI BALLNI YAXLITLASH
+            totalBall: roundNum(c[10]?.v),
             grantChance: Math.round((c[10]?.v / 189) * 100),
             stats: [
               {
                 name: "Ona tili",
-                score: parseFloat(c[11]?.v) || 0,
+                score: roundNum(c[11]?.v), // FAN BALLARINI YAXLITLASH
                 max: 10,
                 color: "#39B54A",
               },
               {
                 name: "Matematika",
-                score: parseFloat(c[12]?.v) || 0,
+                score: roundNum(c[12]?.v),
                 max: 10,
                 color: "#39B54A",
               },
               {
                 name: "Tarix",
-                score: parseFloat(c[13]?.v) || 0,
+                score: roundNum(c[13]?.v),
                 max: 10,
                 color: "#39B54A",
               },
               {
                 name: "1-Blok",
-                score: parseFloat(c[14]?.v) || 0,
+                score: roundNum(c[14]?.v),
                 max: 30,
                 color: "#2563eb",
               },
               {
                 name: "2-Blok",
-                score: parseFloat(c[15]?.v) || 0,
+                score: roundNum(c[15]?.v),
                 max: 30,
                 color: "#2563eb",
               },
@@ -139,6 +146,8 @@ export default function DtmPremium() {
     };
     fetchSheetsData();
   }, []);
+
+  // ... (JSX qismi va StatCard lar o'sha holaticha qoladi)
 
   const student = useMemo(
     () => studentsData[currentId] || DEFAULT_STUDENT,
@@ -237,7 +246,7 @@ export default function DtmPremium() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] dark:bg-[#080808] pt-12 sm:pt-20 px-3 sm:px-6 max-w-7xl mx-auto pb-20 font-sans dark:text-white transition-all">
+    <div className="min-h-screen bg-[#f0f2f5] dark:bg-[#080808] pt-24 sm:pt-24 px-3 sm:px-6 max-w-7xl mx-auto pb-20 font-sans dark:text-white transition-all">
       {/* HEADER & SEARCH */}
       <div
         className="flex flex-col lg:flex-row justify-between items-center mb-10 gap-6"
@@ -251,8 +260,10 @@ export default function DtmPremium() {
             <h1 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase italic">
               DTM <span className="text-slate-400">CORE</span>
             </h1>
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Premium Tizim
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pt-2">
+              DTM natijalari endi yanada oson. O‘quvchi ID raqamini kiriting va
+              imtihon natijalarini darhol ko‘ring. Ota-onalar va o‘quvchilar
+              uchun qulay yechim.
             </p>
           </div>
         </div>

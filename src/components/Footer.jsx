@@ -34,7 +34,7 @@ export default function Footer() {
       <div className="absolute -bottom-24 -right-24 w-64 h-64 sm:w-96 sm:h-96 bg-[#39B54A]/10 blur-[80px] sm:blur-[120px] rounded-full"></div>
       <div className="absolute top-1/2 -left-24 w-48 h-48 sm:w-72 sm:h-72 bg-[#E43E1C]/10 blur-[80px] sm:blur-[100px] rounded-full"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto py-12 sm:py-20 px-5 sm:px-10">
+      <div className="relative z-10 max-w-7xl mx-auto py-12 sm:py-12 px-5 sm:px-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-16">
           {/* 1. Logo va Ta'rif */}
           <div className="flex flex-col items-center sm:items-start space-y-6 text-center sm:text-left">
@@ -166,8 +166,8 @@ export default function Footer() {
         {/* Footer Pastki qismi */}
         <div className="mt-12 sm:mt-20 pt-8 border-t border-black/10 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[9px] sm:text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-[2px] sm:tracking-[3px] font-bold text-center md:text-left">
-            © 2026 <span className="text-[#E43E1C]">ISTIQBOL</span>{" "}
-            <span className="text-black dark:text-white">LUCK</span>.{" "}
+            © 2026 <span className="text-[#E43E1C]">ISTIQBOL</span>
+            <span className="text-black dark:text-white">LUCK</span>.
             <br className="sm:hidden" /> BARCHA HUQUQLAR HIMOYALANGAN.
           </p>
 
@@ -177,7 +177,7 @@ export default function Footer() {
             rel="noreferrer"
             className="group flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white/20 dark:bg-white/5 backdrop-blur-md border border-black/5 dark:border-white/10 transition-all hover:bg-white/40 dark:hover:bg-white/10"
           >
-            <span className="text-[8px] sm:text-[9px] text-slate-600 dark:text-slate-300 uppercase tracking-[2px] font-medium">
+            <span className="text-[8px] sm:text-[9px] text-slate-600 dark:text-slate-300  tracking-[2px] font-medium">
               Developed by{" "}
               <span className="font-black text-black dark:text-white">
                 soliyev.uz
