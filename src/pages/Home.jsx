@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion, useInView, animate } from "framer-motion";
+import { motion, AnimatePresence, useInView, animate } from "framer-motion";
 import MarqueeRow from "../components/MarqueeRow";
 import {
   Phone,
@@ -8,6 +8,8 @@ import {
   MapPin,
   CheckCircle2,
   Star,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
 
 // --- 1. DOIMIY MA'LUMOTLAR (DATA) ---
@@ -140,7 +142,7 @@ const VideoFeedbackCard = ({ feedback }) => {
                 <Play className="text-white fill-white ml-1" size={32} />
               </div>
             </div>
-            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white">
+            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white text-left">
               <p className="font-black text-xl md:text-2xl italic uppercase tracking-tighter leading-none mb-1">
                 {feedback.name}
               </p>
@@ -194,8 +196,75 @@ const Marquee = ({ items, reverse = false }) => (
 
 export default function Home() {
   const consultRef = useRef(null);
+
+  // Telegram Form States
+  const [formData, setFormData] = useState({ name: "", phone: "+998" });
+  const [status, setStatus] = useState("idle"); // idle, loading, success
+
   const scrollToConsult = () =>
     consultRef.current?.scrollIntoView({ behavior: "smooth" });
+
+  // Telefon maskasi
+  const handlePhoneChange = (e) => {
+    let val = e.target.value;
+    if (!val.startsWith("+998")) val = "+998";
+    const digits = val.replace(/\D/g, "").substring(3, 12);
+    let formatted = "+998";
+    if (digits.length > 0) formatted += " " + digits.substring(0, 2);
+    if (digits.length > 2) formatted += " " + digits.substring(2, 5);
+    if (digits.length > 5) formatted += " " + digits.substring(5, 7);
+    if (digits.length > 7) formatted += " " + digits.substring(7, 9);
+    setFormData({ ...formData, phone: formatted });
+  };
+
+  // Telegramga yuborish
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.phone.length < 17) {
+      alert("Iltimos, telefon raqamingizni to'liq kiriting!");
+      return;
+    }
+
+    setStatus("loading");
+
+    const BOT_TOKEN = "7893849239:AAEalenahp_ar51YDUBYu5Fr6SazLgGu7dI";
+    const CHAT_ID = "8389397224"; // <--- SHU YERGA ID YOZING
+
+    const message = `
+🚀 *YANGI ARIZA KELDI!*
+━━━━━━━━━━━━━━
+👤 *Ism:* ${formData.name}
+📞 *Telefon:* ${formData.phone}
+📅 *Sana:* ${new Date().toLocaleString("uz-UZ")}
+━━━━━━━━━━━━━━
+    `;
+
+    try {
+      const res = await fetch(
+        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message,
+            parse_mode: "Markdown",
+          }),
+        },
+      );
+
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", phone: "+998" });
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      alert("Xatolik yuz berdi. Iltimos qayta urinib ko'ring.");
+      setStatus("idle");
+    }
+  };
 
   return (
     <div className="w-full bg-white dark:bg-[#050505] transition-colors duration-500 font-sans overflow-x-hidden">
@@ -213,12 +282,10 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex items-center justify-center gap-3"
+            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs"
           >
-            <span className="w-6 h-[2px] bg-[#39B54A]"></span>
-            <span className="text-[10px] md:text-xs font-black tracking-[0.3em] uppercase">
-              Kelajak yetakchilari akademiyasi
-            </span>
+            <span className="w-6 h-[2px] bg-[#39B54A]"></span> KELAJAK
+            YETAKCHILARI AKADEMIYASI{" "}
             <span className="w-6 h-[2px] bg-[#39B54A]"></span>
           </motion.div>
           <motion.div
@@ -255,7 +322,7 @@ export default function Home() {
           >
             <button
               onClick={scrollToConsult}
-              className="px-8 py-4 bg-[#39B54A] text-white rounded-full font-black text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-[#2e943c] hover:scale-105 transition-all shadow-xl shadow-green-500/20"
+              className="px-12 py-5 bg-[#39B54A] text-white rounded-full font-black text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-green-500/20 active:scale-95"
             >
               Bog'lanish
             </button>
@@ -268,23 +335,23 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-20 gap-6 text-left">
             <div>
-              <h2 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
+              <h2 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic text-left">
                 Nega aynan biz?
               </h2>
-              <p className="text-4xl md:text-6xl font-black dark:text-white uppercase leading-none tracking-tighter">
+              <p className="text-4xl md:text-6xl font-black dark:text-white uppercase leading-none tracking-tighter text-left">
                 Afzalliklarimiz
               </p>
             </div>
-            <p className="max-w-xs text-gray-500 border-l-2 border-[#E43E1C] pl-6 italic font-medium text-sm md:text-base">
+            <p className="max-w-xs text-gray-500 border-l-2 border-[#E43E1C] pl-6 italic font-medium text-sm md:text-base text-left">
               Har bir bolaning yashirin qobiliyatlarini yuzaga chiqaramiz.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {advantages.map((adv) => (
               <motion.div
                 whileHover={{ y: -10 }}
                 key={adv.id}
-                className="p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-[#e3dede] dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-800 transition-all group relative overflow-hidden"
+                className="p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-[#e3dede] dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-800 transition-all group relative overflow-hidden text-left"
               >
                 <span
                   className="text-5xl md:text-6xl font-black italic opacity-30"
@@ -292,10 +359,10 @@ export default function Home() {
                 >
                   {adv.id}
                 </span>
-                <h3 className="text-2xl md:text-3xl font-black mt-6 md:mt-8 mb-4 dark:text-white leading-tight">
+                <h3 className="text-2xl md:text-3xl font-black mt-6 md:mt-8 mb-4 dark:text-white leading-tight text-left">
                   {adv.title}
                 </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-lg leading-relaxed">
+                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-lg leading-relaxed text-left">
                   {adv.desc}
                 </p>
               </motion.div>
@@ -315,7 +382,7 @@ export default function Home() {
               <div className="text-4xl md:text-6xl font-black text-[#2E3192] dark:text-white transition-all group-hover:scale-110 origin-left tracking-tighter">
                 <Counter value={s.value} />
               </div>
-              <div className="w-6 h-1 bg-[#39B54A] mt-3 md:mt-4 group-hover:w-12 transition-all duration-300"></div>
+              <div className="w-6 h-1 bg-[#39B54A] mt-3 md:mt-4 group-hover:w-12 transition-all"></div>
             </div>
           ))}
         </div>
@@ -323,8 +390,8 @@ export default function Home() {
 
       {/* 4. MAKTAB HAYOTI */}
       <section className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]">
-        <div className="w-full text-center">
-          <h2 className="text-4xl md:text-6xl font-black mb-12 md:mb-20 dark:text-white italic uppercase tracking-tighter px-4">
+        <div className="w-full text-center px-4">
+          <h2 className="text-4xl md:text-6xl font-black mb-12 md:mb-20 dark:text-white italic uppercase tracking-tighter">
             MAKTAB <span className="text-[#39B54A]">HAYOTI</span>
           </h2>
           <Marquee
@@ -347,16 +414,16 @@ export default function Home() {
 
       {/* 5. O'QUVCHILAR OVOZI */}
       <section className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="text-center mb-16 md:mb-24">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
+          <div className="mb-16 md:mb-24">
             <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
               Samimiy fikrlar
             </h4>
-            <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase text-center">
+            <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
               O'QUVCHILARIMIZ <span className="text-[#E43E1C]">OVOZI</span>
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-10 md:gap-12 text-left">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-12">
             {studentFeedbacks.map((feedback) => (
               <VideoFeedbackCard key={feedback.id} feedback={feedback} />
             ))}
@@ -365,8 +432,8 @@ export default function Home() {
       </section>
 
       {/* 6. UNIVERSITETLAR */}
-      <section className="w-full py-20 md:py-32 bg-white dark:bg-[#050505] border-y border-zinc-100 dark:border-zinc-900 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 text-center mb-16 md:mb-20">
+      <section className="py-20 md:py-32 border-y border-zinc-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-[#050505]">
+        <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-20">
           <motion.h4
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -382,46 +449,96 @@ export default function Home() {
             BITIRUVCHILARIMIZ <br />{" "}
             <span className="text-[#2E3192]">NUFUZLI</span> OLIGOHLARDA
           </motion.h2>
-          <p className="mt-6 md:mt-8 text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto font-medium italic text-sm md:text-base px-4">
+          <p className="mt-8 text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto font-medium italic text-sm md:text-base">
             O'quvchilarimiz dunyoning eng top universitetlariga muddatidan oldin
             grant asosida qabul qilinmoqda.
           </p>
         </div>
         <div className="w-full relative">
           <MarqueeRow items={universities} />
-          <div className="opacity-30 mt-4 md:mt-8">
+          <div className="opacity-30 mt-8">
             <MarqueeRow items={universities} reverse />
           </div>
         </div>
       </section>
 
-      {/* 7. KONSULTATSIYA */}
+      {/* 7. KONSULTATSIYA (YANGILANGAN) */}
       <section
         ref={consultRef}
         className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]"
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div className="bg-[#e3dede] dark:bg-[#0c0c0c] p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] border dark:border-zinc-800 shadow-2xl text-left">
-              <h2 className="text-4xl md:text-7xl font-black mb-6 dark:text-white uppercase leading-[0.9] tracking-tighter">
+            {/* FORM QISMI */}
+            <div className="bg-[#e3dede] dark:bg-[#0c0c0c] p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] border dark:border-zinc-800 shadow-2xl text-left relative overflow-hidden">
+              <AnimatePresence>
+                {status === "success" && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 z-20 bg-[#39B54A] flex flex-col items-center justify-center text-white text-center p-6"
+                  >
+                    <CheckCircle size={80} className="mb-4 animate-bounce" />
+                    <h3 className="text-3xl font-black uppercase italic tracking-tighter">
+                      Qabul qilindi!
+                    </h3>
+                    <p className="font-bold mt-2 opacity-90">
+                      Tez orada siz bilan bog'lanamiz.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <h2 className="text-4xl md:text-7xl font-black mb-6 dark:text-white uppercase leading-[0.9] tracking-tighter text-left">
                 QO'SHILISH VAQTI <span className="text-[#E43E1C]">KELDI.</span>
               </h2>
-              <div className="grid gap-3 md:gap-4 mt-8 md:mt-10">
+
+              <form
+                onSubmit={handleSubmit}
+                className="grid gap-3 md:gap-4 mt-8 md:mt-10"
+              >
                 <input
+                  required
                   type="text"
-                  placeholder="To'liq ismingiz"
-                  className="w-full p-5 md:p-6 bg-white/50 dark:bg-black border dark:border-zinc-800 rounded-[1.5rem] md:rounded-[2rem] font-bold outline-none focus:border-[#39B54A] text-sm md:text-base"
+                  placeholder="Ismingizni kiriting"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full p-5 md:p-6 bg-white/70 dark:bg-black border-2 border-transparent dark:border-zinc-800 rounded-[1.5rem] md:rounded-[2rem] font-bold outline-none focus:border-[#39B54A] dark:text-white transition-all text-sm md:text-base"
                 />
+
                 <input
+                  required
                   type="text"
-                  placeholder="Telefon raqamingiz"
-                  className="w-full p-5 md:p-6 bg-white/50 dark:bg-black border dark:border-zinc-800 rounded-[1.5rem] md:rounded-[2rem] font-bold outline-none focus:border-[#39B54A] text-sm md:text-base"
+                  placeholder="+998 __ ___ __ __"
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  className="w-full p-5 md:p-6 bg-white/70 dark:bg-black border-2 border-transparent dark:border-zinc-800 rounded-[1.5rem] md:rounded-[2rem] font-bold outline-none focus:border-[#39B54A] dark:text-white transition-all text-sm md:text-base tracking-wider"
                 />
-                <button className="w-full p-3 md:p-4 bg-[#39B54A] text-white font-black rounded-[1.5rem] md:rounded-[2rem] uppercase tracking-widest text-base md:text-xl hover:bg-[#2E3192] transition-all">
-                  Ariza topshirish
+
+                <button
+                  disabled={status === "loading"}
+                  type="submit"
+                  className="w-full p-6 md:p-8 bg-[#39B54A] text-white font-black rounded-[1.5rem] md:rounded-[2rem] uppercase tracking-widest text-base md:text-xl hover:bg-black transition-all shadow-xl shadow-green-500/10 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {status === "loading" ? (
+                    <>
+                      {" "}
+                      <Loader2 className="animate-spin" /> Yuborilmoqda...{" "}
+                    </>
+                  ) : (
+                    "Ariza topshirish"
+                  )}
                 </button>
+              </form>
+
+              <div className="absolute -bottom-10 -right-10 text-[12rem] font-black text-black/[0.03] dark:text-white/[0.03] pointer-events-none select-none italic uppercase">
+                LUCK
               </div>
             </div>
+
+            {/* XARITA QISMI */}
             <div className="relative h-[400px] md:h-[700px] rounded-[2.5rem] md:rounded-[4rem] overflow-hidden border-4 border-white dark:border-zinc-800 shadow-3xl">
               <iframe
                 title="Map"
@@ -431,11 +548,25 @@ export default function Home() {
                 allowFullScreen
                 loading="lazy"
               ></iframe>
+              <div className="absolute top-6 left-6 right-6 bg-white/90 dark:bg-black/90 backdrop-blur-md p-4 md:p-6 rounded-3xl flex items-center gap-4 md:gap-5 shadow-2xl border border-white/20">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-[#39B54A] rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <MapPin size={24} />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-lg md:text-xl font-black dark:text-white uppercase leading-none mb-1">
+                    {branches.tashkent.name}
+                  </h3>
+                  <p className="text-[10px] md:text-sm text-gray-500 font-bold">
+                    {branches.tashkent.address}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Footer mantiqini ham o'z ichiga oluvchi style qismi */}
       <style
         dangerouslySetInnerHTML={{
           __html: `

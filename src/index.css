@@ -3,6 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 /* index.css */
+
+/* Tailwind v4 da Dark Mode klass orqali ishlashi uchun */
+@theme {
+  /* Bu yerda o'zgaruvchilar bo'lishi mumkin */
+}
+
+/* 
+   v4 da standart bo'yicha dark: klassi ham media, ham classga qaraydi. 
+   Lekin faqat klassga bog'lab qo'yish uchun quyidagi qatorni qo'shish tavsiya etiladi:
+*/
+@custom-variant dark (&:where(.dark, .dark *));
 * {
   transition:
     background-color 0.3s ease,
