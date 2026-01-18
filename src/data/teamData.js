@@ -8,7 +8,7 @@ export const director = {
   education: "Toshkent Davlat Iqtisodiyot Universiteti, MBA (London)",
   achievements:
     "Xalqaro ta'lim menejmenti bo'yicha ekspert, 'Yil rahbari' mukofoti sohibi.",
-  img: "https://images.unsplash.com/photo-1519085185758-261bd0421897?w=1000",
+  img: "https://as1.ftcdn.net/jpg/02/94/62/14/1000_F_294621430_9dwIpCeY1LqefWCcU23pP9i11BgzOS0N.jpg",
   quote:
     "Bizning maqsadimiz — nafaqat bilimli, balki dunyoqarashi keng yetakchilarni tarbiyalash.",
   bio: "Fazliddin Omonov boshchiligida Istiqbol Luck maktabi 5 ta xalqaro ta'lim standarti sertifikatini qo'lga kiritgan. U Germaniya va Finlyandiya tajribasini maktab tizimiga joriy etishda yetakchilik qilmoqda.",

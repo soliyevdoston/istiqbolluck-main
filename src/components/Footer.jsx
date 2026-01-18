@@ -23,54 +23,56 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative mt-20 overflow-hidden text-white">
-      {/* --- ASOSIY RANG VA GRADYENT FON --- */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0B0F1A] via-[#1E2235] to-[#0B0F1A] z-0"></div>
+    <footer className="relative mt-20 overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
+      {/* --- FON RANGI --- */}
+      <div className="absolute inset-0 bg-[#e3dede] dark:bg-gradient-to-br dark:from-[#0B0F1A] dark:via-[#1E2235] dark:to-[#0B0F1A] z-0"></div>
 
-      {/* Orqa fondagi dekorativ effektlar */}
+      {/* Yuqori dekorativ chiziq */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#E43E1C] via-[#39B54A] to-[#2E3192]"></div>
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#39B54A]/10 blur-[120px] rounded-full"></div>
-      <div className="absolute top-1/2 -left-24 w-72 h-72 bg-[#E43E1C]/10 blur-[100px] rounded-full"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto py-20 px-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
+      {/* Dekorativ blur effektlar */}
+      <div className="absolute -bottom-24 -right-24 w-64 h-64 sm:w-96 sm:h-96 bg-[#39B54A]/10 blur-[80px] sm:blur-[120px] rounded-full"></div>
+      <div className="absolute top-1/2 -left-24 w-48 h-48 sm:w-72 sm:h-72 bg-[#E43E1C]/10 blur-[80px] sm:blur-[100px] rounded-full"></div>
+
+      <div className="relative z-10 max-w-7xl mx-auto py-12 sm:py-20 px-5 sm:px-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-16">
           {/* 1. Logo va Ta'rif */}
-          <div className="col-span-1 space-y-6">
+          <div className="flex flex-col items-center sm:items-start space-y-6 text-center sm:text-left">
             <Link
               to="/"
               onClick={scrollToTop}
-              className="flex items-center gap-3 p-2  rounded-2xl  w-fit"
+              className="flex items-center gap-3 p-2 w-fit transition-transform hover:scale-105"
             >
               <img
                 src={Logo}
                 alt="Logo"
-                className="w-[50px] h-[50px] object-contain"
+                className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] object-contain"
               />
-              <div className="text-2xl font-black italic flex gap-2 leading-[0.8]">
+              <div className="text-xl sm:text-2xl font-black italic flex gap-2 leading-none">
                 <span className="text-[#E43E1C]">ISTIQBOL</span>
-                <span className="text-white">LUCK</span>
+                <span className="text-black dark:text-white">LUCK</span>
               </div>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed font-medium">
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium max-w-xs">
               Biz faqat ta'lim bermaymiz, biz muvaffaqiyatli kelajak poydevorini
               quramiz. Istiqbolingiz - bizning luckimiz!
             </p>
           </div>
 
           {/* 2. Navigatsiya */}
-          <div>
-            <h4 className="font-bold text-[11px] uppercase tracking-[3px] text-white/40 mb-8">
+          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+            <h4 className="font-bold text-[10px] sm:text-[11px] uppercase tracking-[3px] text-slate-500 dark:text-white/40 mb-6 sm:mb-8">
               Bo'limlar
             </h4>
-            <nav className="flex flex-col gap-4">
+            <nav className="flex flex-col gap-3 sm:gap-4">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   onClick={scrollToTop}
-                  className="text-sm font-semibold text-slate-300 hover:text-[#39B54A] transition-all flex items-center group"
+                  className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#39B54A] dark:hover:text-[#39B54A] transition-all flex items-center justify-center sm:justify-start group"
                 >
-                  <span className="w-0 group-hover:w-3 h-[2px] bg-[#39B54A] mr-0 group-hover:mr-2 transition-all"></span>
+                  <span className="hidden sm:block w-0 group-hover:w-3 h-[2px] bg-[#39B54A] mr-0 group-hover:mr-2 transition-all"></span>
                   {link.label}
                 </NavLink>
               ))}
@@ -78,39 +80,39 @@ export default function Footer() {
           </div>
 
           {/* 3. Aloqa */}
-          <div>
-            <h4 className="font-bold text-[11px] uppercase tracking-[3px] text-white/40 mb-8">
+          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+            <h4 className="font-bold text-[10px] sm:text-[11px] uppercase tracking-[3px] text-slate-500 dark:text-white/40 mb-6 sm:mb-8">
               Aloqa markazi
             </h4>
-            <div className="space-y-4">
+            <div className="space-y-4 w-full">
               <a
                 href="tel:+998901234567"
-                className="flex items-center gap-4 group"
+                className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 group"
               >
-                <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center text-[#39B54A] group-hover:bg-[#39B54A] group-hover:text-white transition-all shadow-lg">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/40 dark:bg-white/10 backdrop-blur-sm border border-black/5 dark:border-white/10 flex items-center justify-center text-[#39B54A] group-hover:bg-[#39B54A] group-hover:text-white transition-all shadow-sm">
                   <Phone size={18} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm text-white font-bold tracking-wide">
+                  <span className="text-sm font-bold tracking-wide text-black dark:text-white">
                     +998 90 123 45 67
                   </span>
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">
+                  <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 uppercase font-medium">
                     Qo'ng'iroq qiling
                   </span>
                 </div>
               </a>
               <a
                 href="mailto:info@istiqbol.uz"
-                className="flex items-center gap-4 group"
+                className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 group"
               >
-                <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center text-[#E43E1C] group-hover:bg-[#E43E1C] group-hover:text-white transition-all shadow-lg">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/40 dark:bg-white/10 backdrop-blur-sm border border-black/5 dark:border-white/10 flex items-center justify-center text-[#E43E1C] group-hover:bg-[#E43E1C] group-hover:text-white transition-all shadow-sm">
                   <Mail size={18} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm text-white font-bold tracking-wide">
+                  <span className="text-sm font-bold tracking-wide text-black dark:text-white">
                     info@istiqbol.uz
                   </span>
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">
+                  <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 uppercase font-medium">
                     Email yuboring
                   </span>
                 </div>
@@ -119,8 +121,8 @@ export default function Footer() {
           </div>
 
           {/* 4. Ijtimoiy tarmoqlar */}
-          <div className="md:text-right flex flex-col md:items-end">
-            <h4 className="font-bold text-[11px] uppercase tracking-[3px] text-white/40 mb-8">
+          <div className="flex flex-col items-center lg:items-end text-center lg:text-right">
+            <h4 className="font-bold text-[10px] sm:text-[11px] uppercase tracking-[3px] text-slate-500 dark:text-white/40 mb-6 sm:mb-8">
               Ijtimoiy Hayot
             </h4>
             <div className="flex gap-4">
@@ -144,7 +146,7 @@ export default function Footer() {
                 <a
                   key={i}
                   href={social.href}
-                  className={`w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 transition-all hover:-translate-y-2 hover:shadow-xl shadow-black/20 ${social.color} text-white`}
+                  className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl bg-white/30 dark:bg-white/5 border border-black/5 dark:border-white/10 transition-all hover:-translate-y-2 hover:shadow-xl ${social.color} hover:text-white text-slate-700 dark:text-white`}
                 >
                   {social.icon}
                 </a>
@@ -153,7 +155,7 @@ export default function Footer() {
 
             <button
               onClick={scrollToTop}
-              className="mt-10 group inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[3px] text-white py-3 px-6 rounded-2xl bg-[#39B54A] hover:bg-white hover:text-[#39B54A] transition-all duration-300 shadow-lg shadow-[#39B54A]/20"
+              className="mt-8 sm:mt-10 group inline-flex items-center gap-3 text-[9px] sm:text-[11px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-white py-3 sm:py-4 px-6 sm:px-8 rounded-2xl bg-[#39B54A] hover:opacity-90 transition-all shadow-lg shadow-[#39B54A]/20"
             >
               Yuqoriga qaytish
               <ArrowUpRight size={16} />
@@ -162,22 +164,24 @@ export default function Footer() {
         </div>
 
         {/* Footer Pastki qismi */}
-        <div className=" pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[10px] text-slate-400 uppercase tracking-[3px] font-bold">
+        <div className="mt-12 sm:mt-20 pt-8 border-t border-black/10 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[9px] sm:text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-[2px] sm:tracking-[3px] font-bold text-center md:text-left">
             © 2026 <span className="text-[#E43E1C]">ISTIQBOL</span>{" "}
-            <span className="text-white">LUCK</span>. BARCHA HUQUQLAR
-            HIMOYALANGAN.
+            <span className="text-black dark:text-white">LUCK</span>.{" "}
+            <br className="sm:hidden" /> BARCHA HUQUQLAR HIMOYALANGAN.
           </p>
 
           <a
             href="https://soliyev.uz"
             target="_blank"
             rel="noreferrer"
-            className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 transition-all hover:bg-white/10 hover:border-white/20 shadow-xl"
+            className="group flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white/20 dark:bg-white/5 backdrop-blur-md border border-black/5 dark:border-white/10 transition-all hover:bg-white/40 dark:hover:bg-white/10"
           >
-            <span className="text-[9px] text-slate-300 uppercase tracking-[2px] font-medium">
+            <span className="text-[8px] sm:text-[9px] text-slate-600 dark:text-slate-300 uppercase tracking-[2px] font-medium">
               Developed by{" "}
-              <span className="font-black text-white">soliyev.uz</span>
+              <span className="font-black text-black dark:text-white">
+                soliyev.uz
+              </span>
             </span>
           </a>
         </div>

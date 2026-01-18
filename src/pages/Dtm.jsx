@@ -8,8 +8,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
-  PieChart,
-  Pie,
 } from "recharts";
 import {
   Search,
@@ -28,7 +26,6 @@ import {
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-// MA'LUMOTLAR BAZASI - YANADA BOYITILGAN
 const studentsData = {
   "0000": {
     name: "Ism Familiya",
@@ -98,7 +95,7 @@ export default function Dtm() {
 
   const student = useMemo(
     () => studentsData[currentId] || studentsData["0000"],
-    [currentId]
+    [currentId],
   );
   const currentTest = student.history[testIndex] || student.history[0];
 
@@ -109,7 +106,7 @@ export default function Dtm() {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: "#ffffff",
+        backgroundColor: null, // Transparent to let PDF background shine
       });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
@@ -119,9 +116,9 @@ export default function Dtm() {
         0,
         0,
         210,
-        (canvas.height * 210) / canvas.width
+        (canvas.height * 210) / canvas.width,
       );
-      pdf.save(`Natija_${student.name}.pdf`);
+      pdf.save(`DTM_Natija_${student.name}.pdf`);
     } catch (e) {
       console.error(e);
     }
@@ -139,53 +136,53 @@ export default function Dtm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7f6] pt-24 px-4 md:px-6 max-w-7xl mx-auto pb-20 font-sans text-slate-900">
-      {/* 1. TOP NAVBAR / SEARCH */}
+    <div className="min-h-screen bg-[#f4f7f6] dark:bg-[#0a0a0a] pt-24 sm:pt-24 px-3 sm:px-6 max-w-7xl mx-auto pb-20 font-sans text-slate-900 dark:text-white transition-colors duration-300">
+      {/* 1. HEADER & SEARCH */}
       <div
-        className="flex flex-col lg:flex-row justify-between items-center mb-10 gap-6"
+        className="flex flex-col lg:flex-row justify-between items-center mb-8 sm:mb-10 gap-6"
         data-html2canvas-ignore="true"
       >
-        <div className="flex items-center gap-4">
-          <div className="bg-black p-3 rounded-2xl shadow-lg">
-            <Zap className="text-[#39B54A]" size={32} fill="#39B54A" />
+        <div className="flex items-center gap-3 w-full lg:w-auto">
+          <div className="bg-black dark:bg-zinc-800 p-2 sm:p-3 rounded-xl shadow-lg">
+            <Zap className="text-[#39B54A] w-6 h-6 sm:w-8" fill="#39B54A" />
           </div>
           <div>
-            <h1 className="text-4xl font-black tracking-tighter uppercase italic">
-              DTM <span className="text-slate-400">CORE</span>
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic">
+              DTM{" "}
+              <span className="text-slate-400 dark:text-zinc-500">CORE</span>
             </h1>
-            <p className="text-xs font-bold text-slate-500 tracking-widest uppercase">
-              Intellektual Tahlil Tizimi
+            <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">
+              Tahlil Tizimi
             </p>
           </div>
         </div>
 
         <form
           onSubmit={handleSearch}
-          className="relative w-full lg:w-96 shadow-2xl rounded-2xl overflow-hidden"
+          className="relative w-full lg:w-96 shadow-xl rounded-2xl overflow-hidden"
         >
           <input
             type="text"
             placeholder="O'quvchi ID raqami..."
-            className="w-full py-5 px-8 bg-white border-none outline-none font-bold text-lg"
+            className="w-full py-4 sm:py-5 px-6 sm:px-8 bg-white dark:bg-zinc-900 dark:text-white border-none outline-none font-bold text-sm sm:text-lg"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-black text-white rounded-xl hover:bg-[#39B54A] transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-black dark:bg-[#39B54A] text-white rounded-xl transition-all"
           >
-            <Search size={24} />
+            <Search size={20} />
           </button>
         </form>
       </div>
 
-      {/* 2. MAIN REPORT AREA */}
       <div ref={reportRef} className="space-y-6">
-        {/* TOP WIDGETS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 2. STAT CARDS */}
+        <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             icon={<TrendingUp className="text-blue-500" />}
-            label="O'quvchi Reytingi"
+            label="Reyting"
             value={student.rank}
             sub="Umumiy bazada"
           />
@@ -193,7 +190,7 @@ export default function Dtm() {
             icon={<Zap className="text-yellow-500" />}
             label="Percentile"
             value={`${student.percentile}%`}
-            sub="O'quvchilardan yaxshiroq"
+            sub="O'quvchilardan yaxshi"
           />
           <StatCard
             icon={<Brain className="text-purple-500" />}
@@ -209,50 +206,55 @@ export default function Dtm() {
           />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* LEFT: CHART & SUBJECTS */}
+        {/* 3. MAIN CONTENT GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* LEFT: CHART */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
-              <div className="flex justify-between items-end mb-8">
-                <h3 className="text-2xl font-black italic flex items-center gap-2 uppercase">
-                  <Calendar className="text-[#39B54A]" size={24} />{" "}
-                  {currentTest.date}{" "}
-                  <span className="text-slate-300 ml-2">Hisoboti</span>
+            <div className="bg-white dark:bg-zinc-900 p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-zinc-800 transition-colors">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+                <h3 className="text-lg sm:text-2xl font-black italic flex items-center gap-2 uppercase">
+                  <Calendar className="text-[#39B54A]" /> {currentTest.date}
                 </h3>
-                <div className="text-right">
+                <div className="w-full sm:w-auto text-left sm:text-right bg-slate-50 dark:bg-zinc-800/50 p-3 sm:p-0 rounded-xl">
                   <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
-                    To'plangan Ball
+                    Jami Ball
                   </p>
-                  <p className="text-6xl font-black text-black leading-none">
+                  <p className="text-4xl sm:text-6xl font-black text-black dark:text-[#39B54A] leading-none">
                     {currentTest.totalBall}
                   </p>
                 </div>
               </div>
 
-              <div className="h-[350px] w-full mt-4">
+              <div className="h-[250px] sm:h-[380px] w-full mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={currentTest.stats}>
                     <CartesianGrid
                       strokeDasharray="3 3"
                       vertical={false}
-                      stroke="#f1f5f9"
+                      stroke="#64748b"
+                      opacity={0.1}
                     />
                     <XAxis
                       dataKey="name"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }}
+                      tick={{ fill: "#64748b", fontSize: 10, fontWeight: 700 }}
                     />
                     <YAxis hide domain={[0, 32]} />
                     <Tooltip
-                      cursor={{ fill: "#f8fafc" }}
+                      cursor={{ fill: "rgba(100, 116, 139, 0.1)" }}
                       contentStyle={{
-                        borderRadius: "16px",
+                        borderRadius: "12px",
                         border: "none",
-                        boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                        backgroundColor: "#18181b",
+                        color: "#fff",
                       }}
                     />
-                    <Bar dataKey="score" radius={[12, 12, 0, 0]} barSize={50}>
+                    <Bar
+                      dataKey="score"
+                      radius={[8, 8, 0, 0]}
+                      barSize={window.innerWidth < 500 ? 22 : 45}
+                    >
                       {currentTest.stats.map((entry, index) => (
                         <Cell key={index} fill={entry.color} />
                       ))}
@@ -261,25 +263,25 @@ export default function Dtm() {
                 </ResponsiveContainer>
               </div>
 
-              {/* SUBJECT DETAILS GRID */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-10">
+              {/* SUBJECT GRID */}
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 mt-8">
                 {currentTest.stats.map((item, i) => (
                   <div
                     key={i}
-                    className="p-4 rounded-3xl border border-slate-100 bg-[#fbfcfc] hover:border-[#39B54A] transition-all group"
+                    className="p-3 sm:p-4 rounded-2xl border border-slate-100 dark:border-zinc-800 bg-[#fbfcfc] dark:bg-zinc-800/30 hover:border-[#39B54A] transition-all"
                   >
-                    <p className="text-[10px] text-slate-400 font-bold uppercase mb-2 group-hover:text-[#39B54A]">
+                    <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase mb-1">
                       {item.name}
                     </p>
                     <div className="flex items-end gap-1">
-                      <span className="text-2xl font-black text-slate-800">
+                      <span className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white">
                         {item.score}
                       </span>
-                      <span className="text-xs font-bold text-slate-400 mb-1">
+                      <span className="text-[10px] font-bold text-slate-400 mb-1">
                         /{item.max}
                       </span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-200 rounded-full mt-3 overflow-hidden">
+                    <div className="w-full h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-full mt-2 overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-1000"
                         style={{
@@ -294,98 +296,91 @@ export default function Dtm() {
             </div>
           </div>
 
-          {/* RIGHT: PROFILE & AI ADVICE */}
+          {/* RIGHT: PROFILE & ADVICE */}
           <div className="space-y-6">
-            {/* PROFILE CARD */}
-            <div className="bg-black text-white p-8 rounded-[2.5rem] relative overflow-hidden shadow-2xl">
+            <div className="bg-black dark:bg-zinc-900 text-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] relative overflow-hidden shadow-xl border border-transparent dark:border-zinc-800">
               <div className="relative z-10">
-                <div className="flex justify-between items-start mb-10">
-                  <div className="p-3 bg-[#39B54A] rounded-2xl">
-                    <Hash size={24} color="black" />
+                <div className="flex justify-between items-start mb-6 sm:mb-10">
+                  <div className="p-2 sm:p-3 bg-[#39B54A] rounded-xl">
+                    <Hash size={20} color="black" />
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-[#39B54A] uppercase tracking-[0.2em]">
-                      O'quvchi ID
+                    <p className="text-[9px] font-black text-[#39B54A] uppercase tracking-widest">
+                      ID
                     </p>
-                    <p className="text-xl font-black">#{currentId}</p>
+                    <p className="text-lg sm:text-xl font-black">
+                      #{currentId}
+                    </p>
                   </div>
                 </div>
-
-                <p className="text-4xl font-black uppercase italic leading-tight mb-2 tracking-tighter">
+                <p className="text-2xl sm:text-4xl font-black uppercase italic leading-tight mb-1">
                   {student.name}
                 </p>
-                <p className="text-[#39B54A] font-bold text-sm tracking-widest uppercase mb-8">
+                <p className="text-[#39B54A] font-bold text-[10px] sm:text-sm tracking-widest uppercase mb-6">
                   {student.direction}
                 </p>
-
-                <div className="space-y-4 border-t border-slate-800 pt-8">
-                  <InfoRow icon={<School size={18} />} text={student.class} />
+                <div className="space-y-3 border-t border-slate-800 pt-6">
+                  <InfoRow icon={<School size={16} />} text={student.class} />
                   <InfoRow
-                    icon={<Award size={18} />}
+                    icon={<Award size={16} />}
                     text={
                       currentTest.cert > 0
-                        ? "Sertifikat mavjud"
+                        ? "Sertifikat bor"
                         : "Sertifikat yo'q"
                     }
                   />
                 </div>
               </div>
-              <div className="absolute -bottom-10 -right-10 text-[10rem] font-black text-white/[0.05] pointer-events-none italic">
+              <div className="absolute -bottom-6 -right-6 text-7xl sm:text-[10rem] font-black text-white/[0.05] pointer-events-none italic">
                 DTM
               </div>
             </div>
 
-            {/* AI RECOMMENDATION */}
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
-              <h4 className="text-xl font-black mb-4 flex items-center gap-2 italic uppercase">
-                <Brain className="text-[#39B54A]" size={20} /> AI Tavsiyasi
+            <div className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-zinc-800 transition-colors">
+              <h4 className="text-lg sm:text-xl font-black mb-4 flex items-center gap-2 italic uppercase dark:text-white">
+                <Brain className="text-[#39B54A]" /> AI Tavsiyasi
               </h4>
-              <p className="text-slate-600 font-medium leading-relaxed mb-6">
-                Sizning natijangiz{" "}
-                <span className="text-black font-black uppercase">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 font-medium leading-relaxed mb-6">
+                Natijangiz{" "}
+                <span className="text-black dark:text-white font-black">
                   {currentTest.totalBall} ball
                 </span>
-                . Sizda{" "}
-                <span className="text-blue-600 font-bold">Matematika</span>{" "}
-                fanidan o'sish bor, lekin
+                .
+                <span className="text-blue-600 dark:text-blue-400 font-bold ml-1">
+                  Matematikada
+                </span>{" "}
+                o'sish bor, lekin{" "}
                 <span className="text-red-500 font-bold">
-                  {" "}
                   {currentTest.stats[4].name}
                 </span>{" "}
-                faniga ko'proq e'tibor berish tavsiya etiladi.
+                faniga e'tibor bering.
               </p>
-
-              <div className="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-                <p className="text-xs font-bold text-slate-400 uppercase mb-2">
+              <div className="p-3 sm:p-4 bg-slate-50 dark:bg-zinc-800/50 rounded-xl border border-dashed border-slate-300 dark:border-zinc-700">
+                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">
                   Grant Imkoniyati
                 </p>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 h-3 bg-slate-200 rounded-full overflow-hidden">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-2 sm:h-3 bg-slate-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-[#39B54A]"
+                      className="h-full bg-gradient-to-r from-red-500 to-[#39B54A]"
                       style={{ width: `${currentTest.grantChance}%` }}
                     ></div>
                   </div>
-                  <span className="font-black text-xl">
+                  <span className="font-black text-sm sm:text-xl dark:text-white">
                     {currentTest.grantChance}%
                   </span>
                 </div>
               </div>
-
               <button
                 onClick={downloadPDF}
                 disabled={isDownloading}
-                className="mt-8 w-full py-5 bg-black text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-[#39B54A] transition-all active:scale-95 shadow-lg group"
+                className="mt-6 sm:mt-8 w-full py-4 sm:py-5 bg-black dark:bg-[#39B54A] text-white rounded-xl sm:rounded-2xl font-black flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs sm:text-sm"
               >
                 {isDownloading ? (
                   "YUKLANMOQDA..."
                 ) : (
                   <>
-                    <Download
-                      size={20}
-                      className="group-hover:-translate-y-1 transition-transform"
-                    />{" "}
-                    NATIJANI YUKLASH (PDF)
+                    <Download size={18} /> PDF YUKLASH
                   </>
                 )}
               </button>
@@ -394,27 +389,29 @@ export default function Dtm() {
         </div>
       </div>
 
-      {/* 3. HISTORY SECTION */}
+      {/* 4. HISTORY SECTION */}
       <div
-        className="mt-10 p-8 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm"
+        className="mt-8 sm:mt-10 p-5 sm:p-8 bg-white dark:bg-zinc-900 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-200 dark:border-zinc-800 transition-colors shadow-sm overflow-hidden"
         data-html2canvas-ignore="true"
       >
-        <h4 className="flex items-center gap-3 font-black italic mb-6 uppercase text-slate-400">
-          <History size={24} /> Imtihonlar Tarixi
+        <h4 className="flex items-center gap-2 font-black italic mb-6 uppercase text-slate-400 dark:text-zinc-500 text-xs sm:text-sm">
+          <History size={18} /> Tarix
         </h4>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           {student.history.map((test, index) => (
             <button
               key={index}
               onClick={() => setTestIndex(index)}
-              className={`flex flex-col items-start gap-1 px-8 py-5 rounded-3xl font-bold border-2 transition-all ${
+              className={`flex-1 min-w-[120px] sm:flex-none flex flex-col items-start gap-1 px-4 sm:px-8 py-3 sm:py-5 rounded-xl sm:rounded-3xl font-bold border-2 transition-all ${
                 testIndex === index
-                  ? "border-[#39B54A] bg-[#f0fdf4] text-black"
-                  : "border-transparent bg-slate-100 text-slate-400 hover:bg-slate-200"
+                  ? "border-[#39B54A] bg-[#f0fdf4] dark:bg-zinc-800 text-black dark:text-[#39B54A]"
+                  : "border-transparent bg-slate-100 dark:bg-zinc-800/40 text-slate-400"
               }`}
             >
-              <span className="text-[10px] uppercase opacity-50">Sana</span>
-              <span className="text-lg leading-none">{test.date}</span>
+              <span className="text-[8px] uppercase opacity-50">Sana</span>
+              <span className="text-xs sm:text-lg leading-none">
+                {test.date}
+              </span>
             </button>
           ))}
         </div>
@@ -423,19 +420,22 @@ export default function Dtm() {
   );
 }
 
-// YORDAMCHI KOMPONENTLAR
 function StatCard({ icon, label, value, sub }) {
   return (
-    <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200 flex items-center gap-5">
-      <div className="p-4 bg-slate-50 rounded-2xl">{icon}</div>
-      <div>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
+    <div className="bg-white dark:bg-zinc-900 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] shadow-sm border border-slate-200 dark:border-zinc-800 flex items-center gap-3 sm:gap-5 transition-colors">
+      <div className="p-2 sm:p-4 bg-slate-50 dark:bg-zinc-800 rounded-xl sm:rounded-2xl shrink-0">
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className="text-[8px] sm:text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest leading-none mb-1 truncate">
           {label}
         </p>
-        <p className="text-2xl font-black text-slate-900 leading-none mb-1">
+        <p className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white leading-none mb-1 truncate">
           {value}
         </p>
-        <p className="text-[10px] font-bold text-slate-400">{sub}</p>
+        <p className="text-[8px] sm:text-[10px] font-bold text-slate-400 dark:text-zinc-500 truncate">
+          {sub}
+        </p>
       </div>
     </div>
   );
@@ -443,9 +443,13 @@ function StatCard({ icon, label, value, sub }) {
 
 function InfoRow({ icon, text }) {
   return (
-    <div className="flex items-center gap-4 opacity-90">
-      <div className="p-2 bg-slate-800 rounded-lg">{icon}</div>
-      <span className="font-bold text-lg tracking-tight">{text}</span>
+    <div className="flex items-center gap-3 opacity-90">
+      <div className="p-1.5 sm:p-2 bg-slate-800 dark:bg-zinc-700 rounded-lg shrink-0">
+        {icon}
+      </div>
+      <span className="font-bold text-sm sm:text-lg tracking-tight truncate dark:text-zinc-300">
+        {text}
+      </span>
     </div>
   );
 }
