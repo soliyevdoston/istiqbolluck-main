@@ -290,8 +290,9 @@ export default function DtmPremium() {
 
       <div ref={reportRef} className="p-2 space-y-6">
         {/* 2. STAT CARDS */}
-        <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-4 gap-2">
           <StatCard
+            className="p-2"
             icon={<TrendingUp className="text-blue-500" />}
             label="Reyting"
             value={student.rank}
