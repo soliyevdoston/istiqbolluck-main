@@ -320,11 +320,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs"
+            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs text-[#39B54A]"
           >
-            <span className="w-6 h-[2px] bg-[#39B54A]"></span> KELAJAK
-            YETAKCHILARI AKADEMIYASI{" "}
-            <span className="w-6 h-[2px] bg-[#39B54A]"></span>
+            KELAJAK YETAKCHILARI AKADEMIYASI
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -353,15 +351,16 @@ export default function Home() {
               onClick={() =>
                 consultRef.current?.scrollIntoView({ behavior: "smooth" })
               }
-              className="px-12 py-5 bg-[#39B54A] text-white rounded-full font-black text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-all active:scale-95"
+              className="px-12 py-5 bg-[#39B54A] text-white rounded-full font-black text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-all active:scale-95 shadow-lg"
             >
               Bog'lanish
             </button>
           </motion.div>
         </div>
       </section>
+
       {/* 2. ADVANTAGES SECTION */}
-      <section className="w-full py-20 md:py-32">
+      <section className="py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
             <div>
@@ -399,8 +398,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* 3. STATS SECTION (Markazlashgan) */}
-      <section className="w-full py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900">
+      <section className="py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16 md:mb-24">
             <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
@@ -427,6 +427,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* 4. MAKTAB HAYOTI SECTION */}
       <section className="py-20 md:py-32">
         <div className="w-full text-center">
@@ -451,6 +452,7 @@ export default function Home() {
           />
         </div>
       </section>
+
       {/* 5. FEEDBACK SECTION */}
       <section className="py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center mb-16">
@@ -472,12 +474,13 @@ export default function Home() {
           ))}
         </div>
       </section>
-      {/* 7. KONSULTATSIYA SECTION */}
+
+      {/* 6. KONSULTATSIYA SECTION */}
       <section
         ref={consultRef}
         className="py-20 md:py-32 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center"
       >
-        <div className="bg-[#e3dede] dark:bg-[#0c0c0c] p-10 rounded-[2.5rem] relative overflow-hidden border dark:border-zinc-800 shadow-2xl">
+        <div className="bg-[#e3dede] dark:bg-[#0c0c0c] p-10 rounded-[2.5rem] relative overflow-hidden border dark:border-zinc-800 shadow-2xl text-left">
           <AnimatePresence>
             {status === "success" && (
               <motion.div
@@ -492,7 +495,7 @@ export default function Home() {
               </motion.div>
             )}
           </AnimatePresence>
-          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8 leading-tight">
+          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8">
             QO'SHILISH VAQTI <span className="text-[#E43E1C]">KELDI.</span>
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -529,9 +532,10 @@ export default function Home() {
             loading="lazy"
           ></iframe>
         </div>
-      </section>{" "}
-      {/* 6. FAQ SECTION */}
-      <section className="w-full py-20 md:py-32">
+      </section>
+
+      {/* 7. FAQ SECTION (Sahifa oxirida) */}
+      <section className="py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
             <div>
@@ -554,6 +558,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* CSS qo'shimchalari: Scrollbar yashirish uchun */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
