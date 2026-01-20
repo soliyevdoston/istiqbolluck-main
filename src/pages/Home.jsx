@@ -488,7 +488,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. UNIVERSITIES SECTION (Tiklandi) */}
       {/* 6. UNIVERSITIES SECTION (2 Qatorli Marquee) */}
       <section className="py-20 md:py-32 border-y border-zinc-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-[#050505]">
         <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-20">
@@ -623,21 +622,39 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <style
         dangerouslySetInnerHTML={{
           __html: `
-  @keyframes scroll { 
-    0% { transform: translateX(0); } 
-    100% { transform: translateX(-50%); } 
+  /* Chapga harakat */
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
-  @keyframes scroll-reverse { 
-    0% { transform: translateX(-50%); } 
-    100% { transform: translateX(0); } 
+
+  /* O'ngga harakat */
+  @keyframes scroll-reverse {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
   }
-  .animate-scroll { animation: scroll 20s linear infinite; }
-  .animate-scroll-reverse { animation: scroll-reverse 40s linear infinite; }
-  
+
+  .animate-scroll {
+    display: flex;
+    width: max-content;
+    animation: scroll 40s linear infinite;
+  }
+
+  .animate-scroll-reverse {
+    display: flex;
+    width: max-content;
+    animation: scroll-reverse 40s linear infinite;
+  }
+
+  /* Hover bo'lganda animatsiyani to'xtatish (ixtiyoriy) */
+  .group:hover .animate-scroll,
+  .group:hover .animate-scroll-reverse {
+    animation-play-state: paused;
+  }
+
   .hide-scrollbar::-webkit-scrollbar { display: none; }
   .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 `,
