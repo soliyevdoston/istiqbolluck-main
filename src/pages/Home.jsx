@@ -15,19 +15,11 @@ const wrap = (min, max, v) =>
   ((((v - min) % (max - min)) + (max - min)) % (max - min)) + min;
 
 // --- 2. MA'LUMOTLAR ---
-const branches = {
-  tashkent: {
-    name: "Rishton filiali",
-    address: "Farg'ona viloyati, Rishton tumani",
-    map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.912659295463!2d71.22956197613638!3d40.43293285465283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb01b0ac926783%3A0xa103cff84e3dbd4b!2sIstiqbol%20luck%20xususiy%20maktabi!5e0!3m2!1sru!2s!4v1768546214781!5m2!1sru!2s",
-  },
-};
-
 const faqs = [
   {
     question: "Maktabga qabul jarayoni qanday amalga oshiriladi?",
     answer:
-      "Qabul jarayoni o'quvchi bilan suhbat va aniq fanlardan test sinovi asosida amalga oshiriladi.",
+      "Qabul jarayoni o'quvchi bilan suhbat va aniq fanlardan (matematika, mantiq) test sinovi asosida amalga oshiriladi.",
   },
   {
     question: "O'quv kun tartibi qanday?",
@@ -181,7 +173,7 @@ const DraggableMarquee = ({ items, baseVelocity = -0.4 }) => {
           <div key={i} className="flex-shrink-0">
             <img
               src={item}
-              alt={`School Life ${i}`}
+              alt="Gallery"
               draggable="false"
               className="h-[200px] md:h-[300px] w-[280px] md:w-[450px] object-cover rounded-[2rem] pointer-events-none shadow-lg select-none"
             />
@@ -310,6 +302,8 @@ const FAQItem = ({ faq }) => {
   );
 };
 
+// --- 4. ASOSIY HOME KOMPONENTI ---
+
 export default function Home() {
   const consultRef = useRef(null);
   const [status, setStatus] = useState("idle");
@@ -339,7 +333,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs"
+            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs text-[#39B54A]"
           >
             KELAJAK YETAKCHILARI AKADEMIYASI
           </motion.div>
@@ -360,52 +354,79 @@ export default function Home() {
               <span className="text-[#39B54A]">shu yerda kamol topadi.</span>
             </div>
           </motion.div>
-          <button
-            onClick={() =>
-              consultRef.current?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="mt-12 px-12 py-5 bg-[#39B54A] text-white rounded-full font-black uppercase hover:scale-105 active:scale-95 transition-all"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-12"
           >
-            Bog'lanish
-          </button>
+            <button
+              onClick={() =>
+                consultRef.current?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="px-12 py-5 bg-[#39B54A] text-white rounded-full font-black text-xs md:text-sm tracking-widest uppercase hover:scale-105 active:scale-95 transition-all shadow-lg"
+            >
+              Bog'lanish
+            </button>
+          </motion.div>
         </div>
       </section>
 
-      {/* 2. ADVANTAGES */}
-      <section className="py-20 md:py-32 max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
-        {advantages.map((adv) => (
-          <div
-            key={adv.id}
-            className="p-10 rounded-[2.5rem] bg-zinc-50 dark:bg-[#0c0c0c] border dark:border-zinc-800 text-left hover:border-[#39B54A] transition-all group"
-          >
-            <span
-              className="text-5xl font-black italic opacity-20 group-hover:opacity-100 transition-opacity"
-              style={{ color: adv.color }}
-            >
-              {adv.id}
-            </span>
-            <h3 className="text-2xl font-black mt-4 mb-3 dark:text-white uppercase italic">
-              {adv.title}
-            </h3>
-            <p className="text-gray-500 text-sm italic">{adv.desc}</p>
+      {/* 2. ADVANTAGES SECTION */}
+      <section className="py-20 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
+            <div>
+              <h2 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
+                Nega aynan biz?
+              </h2>
+              <p className="text-4xl md:text-6xl font-black dark:text-white uppercase leading-none tracking-tighter">
+                Afzalliklarimiz
+              </p>
+            </div>
+            <p className="max-w-xs text-gray-500 border-l-2 border-[#E43E1C] pl-6 italic font-medium text-sm md:text-base">
+              Har bir bolaning yashirin qobiliyatlarini yuzaga chiqaramiz.
+            </p>
           </div>
-        ))}
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {advantages.map((adv) => (
+              <div
+                key={adv.id}
+                className="p-8 md:p-12 rounded-[2.5rem] bg-[#e3dede] dark:bg-[#0c0c0c] border dark:border-zinc-800 hover:border-[#39B54A] transition-all group text-left"
+              >
+                <span
+                  className="text-5xl md:text-6xl font-black italic opacity-30 group-hover:opacity-100 transition-opacity"
+                  style={{ color: adv.color }}
+                >
+                  {adv.id}
+                </span>
+                <h3 className="text-2xl md:text-3xl font-black mt-8 mb-4 dark:text-white leading-tight uppercase italic">
+                  {adv.title}
+                </h3>
+                <p className="text-gray-500 text-sm md:text-lg italic">
+                  {adv.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* 3. STATS */}
-      <section className="py-20 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900 text-center">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* 3. STATS SECTION */}
+      <section className="py-20 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
           <div className="mb-16 md:mb-24">
             <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
               Muvaffaqiyat ko'zgusi
             </h4>
-            <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase">
-              ISHONCH RAQAMLARDA
+            <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
+              ISHONCH <span className="text-[#2E3192]">RAQAMLARDA</span>
             </h2>
+            <div className="w-24 h-1 bg-[#E43E1C] mx-auto mt-6"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {stats.map((s, i) => (
-              <div key={i} className="group">
+              <div key={i} className="text-center group">
                 <h4 className="text-[10px] font-black uppercase text-zinc-400 mb-3 tracking-widest">
                   {s.label}
                 </h4>
@@ -420,29 +441,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. MAKTAB HAYOTI */}
-      <section className="py-20 md:py-32 text-center">
-        <h2 className="text-4xl md:text-6xl font-black mb-20 dark:text-white italic uppercase px-4">
-          MAKTAB <span className="text-[#39B54A]">HAYOTI</span>
-        </h2>
-        <DraggableMarquee
-          baseVelocity={-0.4}
-          items={[
-            "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800",
-            "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800",
-            "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
-          ]}
-        />
+      {/* 4. MAKTAB HAYOTI SECTION */}
+      <section className="py-20 md:py-32">
+        <div className="w-full text-center">
+          <h2 className="text-4xl md:text-6xl font-black mb-20 dark:text-white italic uppercase tracking-tighter px-4">
+            MAKTAB <span className="text-[#39B54A]">HAYOTI</span>
+          </h2>
+          <DraggableMarquee
+            baseVelocity={-0.4}
+            items={[
+              "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800",
+              "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800",
+              "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
+            ]}
+          />
+          <DraggableMarquee
+            baseVelocity={0.4}
+            items={[
+              "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800",
+              "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800",
+              "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800",
+            ]}
+          />
+        </div>
       </section>
 
-      {/* 5. FEEDBACKS */}
+      {/* 5. FEEDBACK SECTION */}
       <section className="py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center mb-16">
           <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
             Samimiy fikrlar
           </h4>
           <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
-            O'QUVCHILARIMIZ OVOZI
+            O'QUVCHILARIMIZ <span className="text-[#E43E1C]">OVOZI</span>
           </h2>
         </div>
         <div className="w-full overflow-x-auto snap-x snap-mandatory flex hide-scrollbar px-4 md:px-[10%] pb-10">
@@ -457,21 +488,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. UNIVERSITIES */}
+      {/* 6. UNIVERSITIES SECTION (Tiklandi) */}
+      {/* 6. UNIVERSITIES SECTION (2 Qatorli Marquee) */}
       <section className="py-20 md:py-32 border-y border-zinc-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-[#050505]">
-        <div className="flex overflow-hidden select-none gap-8 py-4 animate-scroll opacity-50">
-          {universities.concat(universities).map((univ, idx) => (
-            <span
-              key={idx}
-              className="text-2xl md:text-5xl font-black italic uppercase text-zinc-300 dark:text-zinc-800 px-8"
-            >
-              {univ}
-            </span>
-          ))}
+        <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-20">
+          <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
+            Katta kelajak sari
+          </h4>
+          <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase leading-tight md:leading-[0.9]">
+            BITIRUVCHILARIMIZ <br />{" "}
+            <span className="text-[#2E3192]">NUFUZLI</span> OLIGOHLARDA
+          </h2>
+        </div>
+
+        <div className="flex flex-col gap-4 md:gap-8">
+          {/* 1-Qator: Chapga harakatlanadi */}
+          <div className="flex overflow-hidden select-none gap-8 py-2 animate-scroll opacity-100 transition-opacity">
+            {[...universities, ...universities].map((univ, idx) => (
+              <span
+                key={`row1-${idx}`}
+                className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 hover:text-[#39B54A] transition-colors duration-300 cursor-default px-6"
+              >
+                {univ}
+              </span>
+            ))}
+          </div>
+
+          {/* 2-Qator: O'ngga harakatlanadi (Reverse) */}
+          <div className="flex overflow-hidden select-none gap-8 py-2 animate-scroll-reverse opacity-100 transition-opacity">
+            {[...universities, ...universities].map((univ, idx) => (
+              <span
+                key={`row2-${idx}`}
+                className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 hover:text-[#E43E1C] transition-colors duration-300 cursor-default px-6"
+              >
+                {univ}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
-
-      {/* 7. KONSULTATSIYA */}
+      {/* 7. KONSULTATSIYA SECTION */}
       <section
         ref={consultRef}
         className="py-20 md:py-32 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center"
@@ -485,14 +541,14 @@ export default function Home() {
                 className="absolute inset-0 z-20 bg-[#39B54A] flex flex-col items-center justify-center text-white text-center p-6"
               >
                 <CheckCircle size={60} className="mb-4 animate-bounce" />{" "}
-                <h3 className="text-2xl font-black uppercase">
+                <h3 className="text-2xl font-black uppercase italic">
                   Ariza yuborildi!
                 </h3>
               </motion.div>
             )}
           </AnimatePresence>
-          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8">
-            QO'SHILISH VAQTI KELDI.
+          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8 leading-tight">
+            QO'SHILISH VAQTI <span className="text-[#E43E1C]">KELDI.</span>
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -509,7 +565,7 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="w-full py-5 bg-[#39B54A] text-white font-black uppercase rounded-2xl text-lg hover:bg-black transition-all"
+              className="w-full py-5 bg-[#39B54A] text-white font-black uppercase rounded-2xl text-lg hover:bg-black transition-all shadow-lg active:scale-95"
             >
               {status === "loading" ? (
                 <Loader2 className="animate-spin mx-auto" />
@@ -522,7 +578,7 @@ export default function Home() {
         <div className="h-[450px] md:h-[600px] rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl relative">
           <iframe
             title="map"
-            src={branches.tashkent.map}
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.912659295463!2d71.22956197613638!3d40.43293285465283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb01b0ac926783%3A0xa103cff84e3dbd4b!2sIstiqbol%20luck%20xususiy%20maktabi!5e0!3m2!1sru!2s!4v1768546214781!5m2!1sru!2s"
             className="w-full h-full grayscale dark:invert"
             allowFullScreen
             loading="lazy"
@@ -533,36 +589,58 @@ export default function Home() {
             </div>
             <div className="text-left">
               <h3 className="text-sm font-black dark:text-white uppercase leading-none">
-                {branches.tashkent.name}
+                Rishton filiali
               </h3>
               <p className="text-[10px] text-gray-500 font-bold">
-                {branches.tashkent.address}
+                Rishton tumani
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. FAQ (Sahifa oxirida) */}
-      <section className="py-20 md:py-32 max-w-5xl mx-auto px-6">
-        <h2 className="text-4xl md:text-6xl font-black mb-16 dark:text-white text-center uppercase">
-          SAVOLLAR
-        </h2>
-        <div className="bg-white dark:bg-[#0c0c0c] rounded-[3rem] p-8 border dark:border-zinc-800 shadow-sm">
-          {faqs.map((faq, index) => (
-            <FAQItem key={index} faq={faq} />
-          ))}
+      {/* 8. FAQ SECTION */}
+      <section className="py-20 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
+            <div>
+              <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
+                Sizni qiziqtirgan savollar
+              </h4>
+              <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
+                KO'P BERILADIGAN{" "}
+                <span className="text-[#E43E1C]">SAVOLLAR</span>
+              </h2>
+            </div>
+            <p className="max-w-xs text-gray-500 border-l-2 border-[#2E3192] pl-6 italic font-medium text-sm md:text-base">
+              Agar savolingizga javob topmasangiz, bizga murojaat qiling.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-[#0c0c0c] rounded-[3rem] p-6 md:p-12 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            {faqs.map((faq, index) => (
+              <FAQItem key={index} faq={faq} />
+            ))}
+          </div>
         </div>
       </section>
 
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-scroll { animation: scroll 30s linear infinite; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `,
+  @keyframes scroll { 
+    0% { transform: translateX(0); } 
+    100% { transform: translateX(-50%); } 
+  }
+  @keyframes scroll-reverse { 
+    0% { transform: translateX(-50%); } 
+    100% { transform: translateX(0); } 
+  }
+  .animate-scroll { animation: scroll 20s linear infinite; }
+  .animate-scroll-reverse { animation: scroll-reverse 40s linear infinite; }
+  
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+`,
         }}
       />
     </div>
