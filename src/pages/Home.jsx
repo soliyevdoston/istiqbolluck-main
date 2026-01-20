@@ -1,19 +1,40 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useInView, animate } from "framer-motion";
-import MarqueeRow from "../components/MarqueeRow";
 import {
-  Phone,
-  ArrowRight,
-  Play,
-  MapPin,
-  CheckCircle2,
-  Star,
-  Loader2,
-  CheckCircle,
-  TrendingUp,
-} from "lucide-react";
+  motion,
+  AnimatePresence,
+  useInView,
+  animate,
+  useMotionValue,
+  useAnimationFrame,
+  useTransform,
+} from "framer-motion";
+import { Play, MapPin, Loader2, CheckCircle, ChevronDown } from "lucide-react";
 
-// --- 1. MA'LUMOTLAR (DATA) ---
+// --- 1. YORDAMCHI FUNKSIYALAR ---
+const wrap = (min, max, v) =>
+  ((((v - min) % (max - min)) + (max - min)) % (max - min)) + min;
+
+// --- 2. MA'LUMOTLAR ---
+const faqs = [
+  {
+    question: "Maktabga qabul jarayoni qanday amalga oshiriladi?",
+    answer:
+      "Qabul jarayoni o'quvchi bilan suhbat va aniq fanlardan (matematika, mantiq) test sinovi asosida amalga oshiriladi.",
+  },
+  {
+    question: "O'quv kun tartibi qanday?",
+    answer: "Darslar soat 08:30 da boshlanadi va 16:30 gacha davom etadi.",
+  },
+  {
+    question: "O'quvchilar ovqat bilan ta'minlanadimi?",
+    answer: "Ha, maktabimizda 3 mahal issiq ovqat tashkil etilgan.",
+  },
+  {
+    question: "Bitiruvchilarga qanday hujjat beriladi?",
+    answer:
+      "Bitiruvchilarga davlat namunasidagi shahodatnoma (attestat) beriladi.",
+  },
+];
 
 const advantages = [
   {
@@ -48,16 +69,6 @@ const stats = [
     desc: "Nufuzli oliygohlar va hayot yo'lida o'z o'rnini topganlar.",
   },
   {
-    label: "Tajriba yili",
-    value: "15+",
-    desc: "Yillar davomida sayqallangan sifatli ta'lim tizimi.",
-  },
-  {
-    label: "Ustozlarimiz",
-    value: "60+",
-    desc: "O'z kasbining ustalari va xalqaro toifadagi mutaxassislar.",
-  },
-  {
     label: "O'qishga kirish",
     value: "98%",
     desc: "Bitiruvchilarimizning davlat va xalqaro OTMlardagi ulushi.",
@@ -72,8 +83,6 @@ const studentFeedbacks = [
     videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800",
-    message:
-      "Bu maktab menga nafaqat bilim, balki haqiqiy do'stlar va liderlik qobiliyatini berdi.",
   },
   {
     id: 2,
@@ -82,8 +91,6 @@ const studentFeedbacks = [
     videoUrl: "https://www.w3schools.com/html/movie.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800",
-    message:
-      "Mentorlar bilan ishlash tizimi juda yoqadi. Har bir savolimga istalgan vaqtda javob olaman.",
   },
   {
     id: 3,
@@ -92,82 +99,102 @@ const studentFeedbacks = [
     videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=800",
+  },
+];
+
+const textFeedbacks = [
+  {
+    id: 1,
+    name: "Zuhra Karimova",
+    role: "9-sinf",
     message:
-      "Xalqaro olimpiadalarga tayyorgarlik ko'rish uchun bu yerdagidan yaxshiroq joy yo'q.",
+      "Maktabdagi muhit menga juda yoqadi, ayniqsa mentorlar bilan ishlash tizimi juda foydali.",
+  },
+  {
+    id: 2,
+    name: "Bekzod Rahmonov",
+    role: "10-sinf",
+    message:
+      "Xalqaro olimpiadalarga tayyorgarlik ko'rish uchun bu yerdan yaxshiroq joy yo'q.",
+  },
+  {
+    id: 3,
+    name: "Omina Ergasheva",
+    role: "8-sinf",
+    message: "Darslar faqat nazariya emas, amaliyotda ham juda ko'p ishlaymiz.",
   },
 ];
 
-const branches = {
-  tashkent: {
-    name: "Rishton filiali",
-    address: "Farg'ona viloyati, Rishton tumani",
-    map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.912659295463!2d71.22956197613638!3d40.43293285465283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb01b0ac926783%3A0xa103cff84e3dbd4b!2sIstiqbol%20luck%20xususiy%20maktabi!5e0!3m2!1sru!2s!4v1768546214781!5m2!1sru!2s",
-  },
-};
+// --- 3. KOMPONENTLAR ---
 
-const universities = [
-  "WIUT",
-  "INHA",
-  "TTPU",
-  "AMITY",
-  "MDIST",
-  "AKFA",
-  "WEBSTER",
-  "HARVARD",
-  "STANFORD",
-  "MIT",
-];
+const DraggableMarquee = ({ items, baseVelocity = -0.4 }) => {
+  const baseX = useMotionValue(0);
+  const x = useTransform(baseX, (v) => `${wrap(-50, 0, v)}%`);
+  const isDragging = useRef(false);
 
-// --- 2. YORDAMCHI KOMPONENTLAR ---
-
-// Raqamlar sanash komponenti (Mobile xatoligi tuzatilgan)
-const Counter = ({ value }) => {
-  const [displayValue, setDisplayValue] = useState("0");
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "0px" }); // Margin 0px qilindi
-
-  useEffect(() => {
-    if (isInView) {
-      const numericPart = value.replace(/[^0-9]/g, "");
-      const suffix = value.replace(/[0-9]/g, "");
-      const numericValue = parseInt(numericPart, 10);
-      const controls = animate(0, numericValue, {
-        duration: 2.5,
-        ease: "easeOut",
-        onUpdate: (latest) => setDisplayValue(Math.floor(latest) + suffix),
-      });
-      return () => controls.stop();
+  useAnimationFrame((t, delta) => {
+    if (!isDragging.current) {
+      let moveBy = baseVelocity * (delta / 1000) * 2;
+      baseX.set(baseX.get() + moveBy);
     }
-  }, [isInView, value]);
+  });
 
-  return <span ref={ref}>{displayValue}</span>;
+  return (
+    <div className="overflow-hidden flex whitespace-nowrap py-4 w-full cursor-grab active:cursor-grabbing">
+      <motion.div
+        className="flex gap-4 md:gap-8"
+        style={{ x }}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0}
+        dragMomentum={false}
+        onDragStart={() => (isDragging.current = true)}
+        onDragEnd={() => (isDragging.current = false)}
+        onDrag={(event, info) => {
+          const currentX = baseX.get();
+          const deltaInUnits = (info.delta.x / window.innerWidth) * 50;
+          baseX.set(currentX + deltaInUnits);
+        }}
+      >
+        {[...items, ...items, ...items, ...items, ...items].map((item, i) => (
+          <div key={i} className="flex-shrink-0">
+            <img
+              src={item}
+              alt="Gallery"
+              draggable="false"
+              className="h-[200px] md:h-[300px] w-[280px] md:w-[450px] object-cover rounded-[2rem] pointer-events-none shadow-lg select-none"
+            />
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
 };
 
 const VideoFeedbackCard = ({ feedback }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   return (
-    <div className="flex flex-col gap-6 group w-full">
-      <div
-        className="relative h-[400px] md:h-[450px] w-full rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden shadow-2xl cursor-pointer bg-black"
-        onClick={() => setIsPlaying(true)}
-      >
+    <div className="flex-shrink-0 w-[85vw] sm:w-[45vw] lg:w-[31%] snap-center px-3">
+      <div className="relative h-[450px] md:h-[500px] w-full rounded-[2.5rem] md:rounded-[3rem] overflow-hidden bg-black shadow-xl group">
         {!isPlaying ? (
           <>
             <img
               src={feedback.thumbnail}
-              alt={feedback.name}
-              className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
+              className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-125 transition-all">
-                <Play className="text-white fill-white ml-1" size={32} />
+            <div
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
+              onClick={() => setIsPlaying(true)}
+            >
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                <Play className="text-white fill-white" size={28} />
               </div>
             </div>
-            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white text-left">
-              <p className="font-black text-xl md:text-2xl italic uppercase tracking-tighter leading-none mb-1">
+            <div className="absolute bottom-8 left-8 text-white text-left">
+              <p className="font-black text-xl italic uppercase tracking-tighter leading-none mb-1">
                 {feedback.name}
               </p>
-              <p className="text-[#39B54A] font-bold text-[10px] md:text-xs uppercase tracking-widest">
+              <p className="text-[#39B54A] font-bold text-[10px] uppercase tracking-widest">
                 {feedback.role}
               </p>
             </div>
@@ -181,87 +208,104 @@ const VideoFeedbackCard = ({ feedback }) => {
           />
         )}
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        className="relative p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] bg-[#e3dede] dark:bg-[#0c0c0c] border border-zinc-200 dark:border-zinc-800 shadow-sm"
-      >
-        <div className="absolute -top-3 left-10 w-6 h-6 bg-[#e3dede] dark:bg-[#0c0c0c] rotate-45 border-l border-t border-zinc-200 dark:border-zinc-800"></div>
-        <p className="text-gray-600 dark:text-gray-400 font-medium italic leading-relaxed text-sm md:text-lg text-left">
-          "{feedback.message}"
-        </p>
-      </motion.div>
     </div>
   );
 };
 
-const Marquee = ({ items, reverse = false }) => (
-  <div className="overflow-hidden flex whitespace-nowrap py-10 relative w-full">
-    <div
-      className={`flex gap-4 md:gap-8 ${reverse ? "animate-scroll-reverse" : "animate-scroll"}`}
-    >
-      {[...items, ...items, ...items].map((item, i) => (
-        <div key={i} className="flex-shrink-0">
-          <img
-            src={item}
-            alt="Gallery"
-            className="h-[200px] md:h-[300px] w-[300px] md:w-[450px] object-cover rounded-[1.5rem] md:rounded-[2rem] shadow-2xl transition-all duration-500 hover:scale-105"
-          />
+const TextFeedbackCard = ({ feedback }) => (
+  <div className="flex-shrink-0 w-[85vw] sm:w-[45vw] lg:w-[31%] snap-center px-3">
+    <div className="h-full min-h-[250px] p-8 rounded-[2.5rem] bg-white dark:bg-[#0c0c0c] border dark:border-zinc-800 shadow-sm text-left flex flex-col justify-between">
+      <p className="text-gray-500 dark:text-zinc-400 italic text-sm md:text-lg mb-6 leading-relaxed">
+        "{feedback.message}"
+      </p>
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 bg-[#39B54A] rounded-full flex items-center justify-center text-white font-bold">
+          {feedback.name[0]}
         </div>
-      ))}
+        <div>
+          <p className="font-black text-sm uppercase italic dark:text-white">
+            {feedback.name}
+          </p>
+          <p className="text-[#39B54A] font-bold text-[10px] uppercase">
+            {feedback.role}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 );
 
-// --- 3. ASOSIY HOME KOMPONENTI ---
+const Counter = ({ value }) => {
+  const [displayValue, setDisplayValue] = useState("0");
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  useEffect(() => {
+    if (isInView) {
+      const numericValue = parseInt(value.replace(/[^0-9]/g, ""), 10);
+      const suffix = value.replace(/[0-9]/g, "");
+      const controls = animate(0, numericValue, {
+        duration: 2.5,
+        onUpdate: (latest) => setDisplayValue(Math.floor(latest) + suffix),
+      });
+      return () => controls.stop();
+    }
+  }, [isInView, value]);
+  return <span ref={ref}>{displayValue}</span>;
+};
+
+const FAQItem = ({ faq }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-zinc-200 dark:border-zinc-800 last:border-0 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-6 md:py-8 flex justify-between items-center text-left transition-all group"
+      >
+        <span className="text-lg md:text-2xl font-black dark:text-white uppercase italic tracking-tighter pr-8 leading-tight group-hover:text-[#39B54A] transition-colors">
+          {faq.question}
+        </span>
+        <div
+          className={`flex-shrink-0 w-10 h-10 rounded-full border-2 border-[#39B54A] flex items-center justify-center transition-all duration-500 ${isOpen ? "rotate-180 bg-[#39B54A] text-white" : "text-[#39B54A]"}`}
+        >
+          <ChevronDown size={24} strokeWidth={3} />
+        </div>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+          >
+            <p className="pb-8 text-gray-500 dark:text-zinc-400 font-medium text-sm md:text-lg italic leading-relaxed max-w-4xl">
+              {faq.answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// --- 4. ASOSIY HOME KOMPONENTI ---
 
 export default function Home() {
   const consultRef = useRef(null);
   const [formData, setFormData] = useState({ name: "", phone: "+998" });
   const [status, setStatus] = useState("idle");
 
-  const scrollToConsult = () =>
-    consultRef.current?.scrollIntoView({ behavior: "smooth" });
-
-  const handlePhoneChange = (e) => {
-    let val = e.target.value;
-    if (!val.startsWith("+998")) val = "+998";
-    const digits = val.replace(/\D/g, "").substring(3, 12);
-    let formatted = "+998";
-    if (digits.length > 0) formatted += " " + digits.substring(0, 2);
-    if (digits.length > 2) formatted += " " + digits.substring(2, 5);
-    if (digits.length > 5) formatted += " " + digits.substring(5, 7);
-    if (digits.length > 7) formatted += " " + digits.substring(7, 9);
-    setFormData({ ...formData, phone: formatted });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.phone.length < 17) {
-      alert("Iltimos, telefon raqamingizni to'liq kiriting!");
-      return;
-    }
     setStatus("loading");
-    const BOT_TOKEN = "7893849239:AAEalenahp_ar51YDUBYu5Fr6SazLgGu7dI";
-    const CHAT_ID = "8389397224";
-    const message = `🚀 YANGI ARIZA!\n👤 Ism: ${formData.name}\n📞 Tel: ${formData.phone}`;
-    try {
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: message }),
-      });
+    setTimeout(() => {
       setStatus("success");
-      setFormData({ name: "", phone: "+998" });
-      setTimeout(() => setStatus("idle"), 5000);
-    } catch (err) {
-      alert("Xatolik!");
-      setStatus("idle");
-    }
+      setTimeout(() => setStatus("idle"), 3000);
+    }, 1500);
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#050505] transition-colors duration-500 font-sans overflow-x-hidden">
+    <div className="w-full bg-white dark:bg-[#050505] font-sans overflow-x-hidden transition-colors duration-500">
       {/* 1. HERO SECTION */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -306,7 +350,9 @@ export default function Home() {
             className="mt-12"
           >
             <button
-              onClick={scrollToConsult}
+              onClick={() =>
+                consultRef.current?.scrollIntoView({ behavior: "smooth" })
+              }
               className="px-12 py-5 bg-[#39B54A] text-white rounded-full font-black text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-all active:scale-95"
             >
               Bog'lanish
@@ -315,8 +361,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. ADVANTAGES */}
-      <section className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]">
+      {/* 2. ADVANTAGES SECTION */}
+      <section className="w-full py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
             <div>
@@ -333,33 +379,31 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {advantages.map((adv) => (
-              <motion.div
-                whileHover={{ y: -10 }}
+              <div
                 key={adv.id}
-                className="p-8 md:p-12 rounded-[2.5rem] bg-[#e3dede] dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-800 group relative text-left"
+                className="p-8 md:p-12 rounded-[2.5rem] bg-[#e3dede] dark:bg-[#0c0c0c] border dark:border-zinc-800 hover:border-[#39B54A] transition-all group text-left"
               >
                 <span
-                  className="text-5xl md:text-6xl font-black italic opacity-30"
+                  className="text-5xl md:text-6xl font-black italic opacity-30 group-hover:opacity-100 transition-opacity"
                   style={{ color: adv.color }}
                 >
                   {adv.id}
                 </span>
-                <h3 className="text-2xl md:text-3xl font-black mt-8 mb-4 dark:text-white leading-tight">
+                <h3 className="text-2xl md:text-3xl font-black mt-8 mb-4 dark:text-white leading-tight uppercase italic">
                   {adv.title}
                 </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-lg leading-relaxed">
+                <p className="text-gray-500 text-sm md:text-lg italic">
                   {adv.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. NATIJALAR SECTION (TITLE VA TAHLIL BILAN) */}
-      <section className="w-full py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900 overflow-hidden">
+      {/* 3. STATS SECTION (Markazlashgan) */}
+      <section className="w-full py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          {/* Sarlavha Qismi */}
           <div className="text-center mb-16 md:mb-24">
             <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
               Muvaffaqiyat ko'zgusi
@@ -369,47 +413,39 @@ export default function Home() {
             </h2>
             <div className="w-24 h-1 bg-[#E43E1C] mx-auto mt-6"></div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {stats.map((s, i) => (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                key={i}
-                className="group cursor-default text-left"
-              >
-                <h4 className="text-[10px] md:text-[11px] font-black uppercase text-zinc-400 mb-3 tracking-[0.2em] leading-tight h-auto md:h-8">
+              <div key={i} className="text-center group">
+                <h4 className="text-[10px] font-black uppercase text-zinc-400 mb-3 tracking-widest">
                   {s.label}
                 </h4>
-                <div className="text-5xl md:text-6xl font-black text-[#2E3192] dark:text-white transition-all group-hover:text-[#39B54A] origin-left tracking-tighter mb-4">
+                <div className="text-6xl font-black text-[#2E3192] dark:text-white mb-3 group-hover:text-[#39B54A] transition-colors">
                   <Counter value={s.value} />
                 </div>
-                <div className="w-8 h-1 bg-[#E43E1C] mb-4 group-hover:w-16 transition-all duration-500"></div>
-                <p className="text-xs md:text-sm text-gray-500 dark:text-zinc-500 font-medium italic leading-relaxed  group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                  {s.desc}
-                </p>
-              </motion.div>
+                <div className="w-8 h-1 bg-[#E43E1C] mx-auto mb-3 group-hover:w-16 transition-all"></div>
+                <p className="text-xs text-gray-500 italic px-2">{s.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. MAKTAB HAYOTI */}
-      <section className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]">
+      {/* 4. MAKTAB HAYOTI SECTION */}
+      <section className="py-20 md:py-32">
         <div className="w-full text-center">
           <h2 className="text-4xl md:text-6xl font-black mb-20 dark:text-white italic uppercase tracking-tighter px-4">
             MAKTAB <span className="text-[#39B54A]">HAYOTI</span>
           </h2>
-          <Marquee
+          <DraggableMarquee
+            baseVelocity={-0.4}
             items={[
               "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800",
               "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800",
               "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
             ]}
           />
-          <Marquee
-            reverse
+          <DraggableMarquee
+            baseVelocity={0.4}
             items={[
               "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800",
               "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800",
@@ -419,195 +455,115 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. FEEDBACKS */}
-      <section className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="mb-24">
-            <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
-              Samimiy fikrlar
-            </h4>
-            <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
-              O'QUVCHILARIMIZ <span className="text-[#E43E1C]">OVOZI</span>
-            </h2>
+      {/* 5. FEEDBACK SECTION */}
+      <section className="py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 text-center mb-16">
+          <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
+            Samimiy fikrlar
+          </h4>
+          <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
+            O'QUVCHILARIMIZ <span className="text-[#E43E1C]">OVOZI</span>
+          </h2>
+        </div>
+        <div className="w-full overflow-x-auto snap-x snap-mandatory flex hide-scrollbar px-4 md:px-[10%] pb-10">
+          {studentFeedbacks.map((f) => (
+            <VideoFeedbackCard key={f.id} feedback={f} />
+          ))}
+        </div>
+        <div className="w-full overflow-x-auto snap-x snap-mandatory flex scroll-smooth hide-scrollbar mt-4 px-4 md:px-[10%]">
+          {textFeedbacks.map((tf) => (
+            <TextFeedbackCard key={tf.id} feedback={tf} />
+          ))}
+        </div>
+      </section>
+
+      {/* 7. KONSULTATSIYA SECTION */}
+      <section
+        ref={consultRef}
+        className="py-20 md:py-32 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center"
+      >
+        <div className="bg-[#e3dede] dark:bg-[#0c0c0c] p-10 rounded-[2.5rem] relative overflow-hidden border dark:border-zinc-800 shadow-2xl">
+          <AnimatePresence>
+            {status === "success" && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute inset-0 z-20 bg-[#39B54A] flex flex-col items-center justify-center text-white text-center p-6"
+              >
+                <CheckCircle size={60} className="mb-4 animate-bounce" />{" "}
+                <h3 className="text-2xl font-black uppercase italic">
+                  Ariza yuborildi!
+                </h3>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8 leading-tight">
+            QO'SHILISH VAQTI <span className="text-[#E43E1C]">KELDI.</span>
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              required
+              type="text"
+              placeholder="Ismingiz"
+              className="w-full p-5 rounded-2xl bg-white dark:bg-black dark:text-white border-2 border-transparent focus:border-[#39B54A] outline-none transition-all font-bold"
+            />
+            <input
+              required
+              type="text"
+              defaultValue="+998"
+              className="w-full p-5 rounded-2xl bg-white dark:bg-black dark:text-white border-2 border-transparent focus:border-[#39B54A] outline-none transition-all font-bold"
+            />
+            <button
+              type="submit"
+              className="w-full py-5 bg-[#39B54A] text-white font-black uppercase rounded-2xl text-lg hover:bg-black transition-all shadow-lg active:scale-95"
+            >
+              {status === "loading" ? (
+                <Loader2 className="animate-spin mx-auto" />
+              ) : (
+                "Ariza topshirish"
+              )}
+            </button>
+          </form>
+        </div>
+        <div className="h-[450px] md:h-[600px] rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl">
+          <iframe
+            title="map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.912659295463!2d71.22956197613638!3d40.43293285465283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb01b0ac926783%3A0xa103cff84e3dbd4b!2sIstiqbol%20luck%20xususiy%20maktabi!5e0!3m2!1sru!2s!4v1768546214781!5m2!1sru!2s"
+            className="w-full h-full grayscale dark:invert"
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+      {/* 6. FAQ SECTION */}
+      <section className="w-full py-20 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
+            <div>
+              <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
+                Sizni qiziqtirgan savollar
+              </h4>
+              <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
+                KO'P BERILADIGAN{" "}
+                <span className="text-[#E43E1C]">SAVOLLAR</span>
+              </h2>
+            </div>
+            <p className="max-w-xs text-gray-500 border-l-2 border-[#2E3192] pl-6 italic font-medium text-sm md:text-base">
+              Agar savolingizga javob topmasangiz, bizga murojaat qiling.
+            </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-12">
-            {studentFeedbacks.map((f) => (
-              <VideoFeedbackCard key={f.id} feedback={f} />
+          <div className="bg-white dark:bg-[#0c0c0c] rounded-[3rem] p-6 md:p-12 border dark:border-zinc-800 shadow-sm">
+            {faqs.map((faq, index) => (
+              <FAQItem key={index} faq={faq} />
             ))}
           </div>
         </div>
       </section>
-
-      {/* 6. UNIVERSITIES */}
-      <section className="py-20 md:py-32 border-y border-zinc-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-[#050505]">
-        <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-20">
-          <motion.h4
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic"
-          >
-            Katta kelajak sari
-          </motion.h4>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase leading-tight md:leading-[0.9]"
-          >
-            BITIRUVCHILARIMIZ <br />{" "}
-            <span className="text-[#2E3192]">NUFUZLI</span> OLIGOHLARDA
-          </motion.h2>
-          <p className="mt-8 text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto font-medium italic text-sm md:text-base">
-            O'quvchilarimiz dunyoning eng nufuzli universitetlariga muddatidan
-            oldin qabul qilinmoqda.
-          </p>
-        </div>
-
-        {/* Marquee Konteyneri */}
-        <div className="flex flex-col gap-4 md:gap-8">
-          {/* 1-Qator (Chapga) */}
-          <div className="flex overflow-hidden select-none gap-8 border-y border-zinc-50 dark:border-zinc-900/50 py-4">
-            <div className="flex flex-shrink-0 items-center justify-around gap-8 min-w-full animate-scroll">
-              {universities.map((univ, idx) => (
-                <span
-                  key={idx}
-                  className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 hover:text-[#39B54A] transition-colors duration-300 cursor-default"
-                >
-                  {univ}
-                </span>
-              ))}
-            </div>
-            {/* Loop to'xtab qolmasligi uchun takrorlaymiz */}
-            <div className="flex flex-shrink-0 items-center justify-around gap-8 min-w-full animate-scroll">
-              {universities.map((univ, idx) => (
-                <span
-                  key={`dup1-${idx}`}
-                  className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 hover:text-[#39B54A] transition-colors duration-300 cursor-default"
-                >
-                  {univ}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* 2-Qator (O'ngga - Teskari) */}
-          <div className="flex overflow-hidden select-none gap-8 py-4 opacity-50 md:opacity-100">
-            <div className="flex flex-shrink-0 items-center justify-around gap-8 min-w-full animate-scroll-reverse">
-              {universities.map((univ, idx) => (
-                <span
-                  key={`rev-${idx}`}
-                  className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 hover:text-[#E43E1C] transition-colors duration-300 cursor-default"
-                >
-                  {univ}
-                </span>
-              ))}
-            </div>
-            <div className="flex flex-shrink-0 items-center justify-around gap-8 min-w-full animate-scroll-reverse">
-              {universities.map((univ, idx) => (
-                <span
-                  key={`dup2-${idx}`}
-                  className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 hover:text-[#E43E1C] transition-colors duration-300 cursor-default"
-                >
-                  {univ}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. KONSULTATSIYA */}
-      <section
-        ref={consultRef}
-        className="w-full py-20 md:py-32 bg-white dark:bg-[#050505]"
-      >
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="bg-[#e3dede] dark:bg-[#0c0c0c] p-8 md:p-16 rounded-[3rem] border dark:border-zinc-800 shadow-2xl relative overflow-hidden">
-              <AnimatePresence>
-                {status === "success" && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="absolute inset-0 z-20 bg-[#39B54A] flex flex-col items-center justify-center text-white text-center p-6"
-                  >
-                    <CheckCircle size={80} className="mb-4 animate-bounce" />
-                    <h3 className="text-3xl font-black uppercase italic tracking-tighter">
-                      Qabul qilindi!
-                    </h3>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <h2 className="text-4xl md:text-7xl font-black mb-6 dark:text-white uppercase leading-[0.9] tracking-tighter text-left">
-                QO'SHILISH VAQTI <span className="text-[#E43E1C]">KELDI.</span>
-              </h2>
-              <form onSubmit={handleSubmit} className="grid gap-4 mt-10">
-                <input
-                  required
-                  type="text"
-                  placeholder="Ismingizni kiriting"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="w-full p-6 bg-white/70 dark:bg-black border-2 border-transparent dark:border-zinc-800 rounded-[1.5rem] font-bold outline-none focus:border-[#39B54A] dark:text-white transition-all"
-                />
-                <input
-                  required
-                  type="text"
-                  placeholder="+998 __ ___ __ __"
-                  value={formData.phone}
-                  onChange={handlePhoneChange}
-                  className="w-full p-6 bg-white/70 dark:bg-black border-2 border-transparent dark:border-zinc-800 rounded-[1.5rem] font-bold outline-none focus:border-[#39B54A] dark:text-white transition-all tracking-wider"
-                />
-                <button
-                  disabled={status === "loading"}
-                  type="submit"
-                  className="w-full p-8 bg-[#39B54A] text-white font-black rounded-[1.5rem] uppercase tracking-widest text-xl hover:bg-black transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
-                >
-                  {status === "loading" ? (
-                    <>
-                      <Loader2 className="animate-spin" /> Yuborilmoqda...
-                    </>
-                  ) : (
-                    "Ariza topshirish"
-                  )}
-                </button>
-              </form>
-            </div>
-            <div className="relative h-[400px] md:h-[700px] rounded-[3rem] overflow-hidden border-4 border-white dark:border-zinc-800 shadow-3xl">
-              <iframe
-                title="Map"
-                src={branches.tashkent.map}
-                className="w-full h-full grayscale-0 dark:invert dark:opacity-70"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-              ></iframe>
-              <div className="absolute top-6 left-6 right-6 bg-white/90 dark:bg-black/90 backdrop-blur-md p-6 rounded-3xl flex items-center gap-5 shadow-2xl">
-                <div className="w-14 h-14 bg-[#39B54A] rounded-2xl flex items-center justify-center text-white">
-                  <MapPin size={24} />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-xl font-black dark:text-white uppercase mb-1">
-                    {branches.tashkent.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 font-bold">
-                    {branches.tashkent.address}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        @keyframes scroll-reverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-        .animate-scroll { animation: scroll 40s linear infinite; }
-        .animate-scroll-reverse { animation: scroll-reverse 40s linear infinite; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `,
         }}
       />
