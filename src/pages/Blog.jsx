@@ -2,14 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { blogPosts, certificates } from "../data/blogData";
-import {
-  Award,
-  Calendar,
-  ArrowUpRight,
-  X,
-  ChevronRight,
-  Filter,
-} from "lucide-react";
+import { Award, Calendar, ArrowUpRight, X, Filter } from "lucide-react";
 
 export default function Blog() {
   const [selectedCert, setSelectedCert] = useState(null);

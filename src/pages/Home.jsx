@@ -8,7 +8,7 @@ import {
   useAnimationFrame,
   useTransform,
 } from "framer-motion";
-import { Play, MapPin, Loader2, CheckCircle, ChevronDown } from "lucide-react";
+import { Play, Loader2, CheckCircle, ChevronDown } from "lucide-react";
 
 // --- 1. YORDAMCHI FUNKSIYALAR ---
 const wrap = (min, max, v) =>

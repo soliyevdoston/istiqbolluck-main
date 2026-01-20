@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { blogPosts } from "../data/blogData";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, Tag } from "lucide-react";
 
 export default function BlogDetail() {
   const { id } = useParams();
