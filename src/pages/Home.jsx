@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import "../index.css";
 import {
   motion,
   AnimatePresence,
@@ -490,19 +491,21 @@ export default function Home() {
 
       {/* 6. UNIVERSITIES SECTION (2 Qatorli Marquee) */}
       <section className="py-20 md:py-32 border-y border-zinc-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-[#050505]">
+        {/* Sarlavha */}
         <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-20">
           <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
             Katta kelajak sari
           </h4>
           <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase leading-tight md:leading-[0.9]">
-            BITIRUVCHILARIMIZ <br />{" "}
+            BITIRUVCHILARIMIZ <br />
             <span className="text-[#2E3192]">NUFUZLI</span> OLIGOHLARDA
           </h2>
         </div>
 
-        <div className="flex flex-col gap-4 md:gap-8">
+        {/* Universities Marquee */}
+        <div className="flex flex-col gap-4 md:gap-8 group">
           {/* 1-Qator: Chapga harakatlanadi */}
-          <div className="flex overflow-hidden select-none gap-8 py-2 animate-scroll opacity-100 transition-opacity">
+          <div className="flex overflow-hidden select-none gap-8 py-2 animate-scroll">
             {[...universities, ...universities].map((univ, idx) => (
               <span
                 key={`row1-${idx}`}
@@ -514,7 +517,7 @@ export default function Home() {
           </div>
 
           {/* 2-Qator: O'ngga harakatlanadi (Reverse) */}
-          <div className="flex overflow-hidden select-none gap-8 py-2 animate-scroll-reverse opacity-100 transition-opacity">
+          <div className="flex overflow-hidden select-none gap-8 py-2 animate-scroll-reverse">
             {[...universities, ...universities].map((univ, idx) => (
               <span
                 key={`row2-${idx}`}
@@ -526,6 +529,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* 7. KONSULTATSIYA SECTION */}
       <section
         ref={consultRef}
@@ -622,44 +626,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-  /* Chapga harakat */
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  /* O'ngga harakat */
-  @keyframes scroll-reverse {
-    from { transform: translateX(-50%); }
-    to { transform: translateX(0); }
-  }
-
-  .animate-scroll {
-    display: flex;
-    width: max-content;
-    animation: scroll 40s linear infinite;
-  }
-
-  .animate-scroll-reverse {
-    display: flex;
-    width: max-content;
-    animation: scroll-reverse 40s linear infinite;
-  }
-
-  /* Hover bo'lganda animatsiyani to'xtatish (ixtiyoriy) */
-  .group:hover .animate-scroll,
-  .group:hover .animate-scroll-reverse {
-    animation-play-state: paused;
-  }
-
-  .hide-scrollbar::-webkit-scrollbar { display: none; }
-  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-`,
-        }}
-      />
     </div>
   );
 }
