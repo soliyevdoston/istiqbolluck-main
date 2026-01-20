@@ -360,7 +360,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* 2. ADVANTAGES SECTION */}
       <section className="w-full py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -400,7 +399,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* 3. STATS SECTION (Markazlashgan) */}
       <section className="w-full py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -429,7 +427,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* 4. MAKTAB HAYOTI SECTION */}
       <section className="py-20 md:py-32">
         <div className="w-full text-center">
@@ -454,7 +451,6 @@ export default function Home() {
           />
         </div>
       </section>
-
       {/* 5. FEEDBACK SECTION */}
       <section className="py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center mb-16">
@@ -476,7 +472,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* 7. KONSULTATSIYA SECTION */}
       <section
         ref={consultRef}
@@ -534,7 +529,7 @@ export default function Home() {
             loading="lazy"
           ></iframe>
         </div>
-      </section>
+      </section>{" "}
       {/* 6. FAQ SECTION */}
       <section className="w-full py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
