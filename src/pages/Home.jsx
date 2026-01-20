@@ -8,13 +8,21 @@ import {
   useAnimationFrame,
   useTransform,
 } from "framer-motion";
-import { Play, Loader2, CheckCircle, ChevronDown } from "lucide-react";
+import { Play, Loader2, CheckCircle, ChevronDown, MapPin } from "lucide-react";
 
 // --- 1. YORDAMCHI FUNKSIYALAR ---
 const wrap = (min, max, v) =>
   ((((v - min) % (max - min)) + (max - min)) % (max - min)) + min;
 
 // --- 2. MA'LUMOTLAR ---
+const branches = {
+  tashkent: {
+    name: "Rishton filiali",
+    address: "Farg'ona viloyati, Rishton tumani",
+    map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.912659295463!2d71.22956197613638!3d40.43293285465283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb01b0ac926783%3A0xa103cff84e3dbd4b!2sIstiqbol%20luck%20xususiy%20maktabi!5e0!3m2!1sru!2s!4v1768546214781!5m2!1sru!2s",
+  },
+};
+
 const faqs = [
   {
     question: "Maktabga qabul jarayoni qanday amalga oshiriladi?",
@@ -125,6 +133,19 @@ const textFeedbacks = [
   },
 ];
 
+const universities = [
+  "WIUT",
+  "INHA",
+  "TTPU",
+  "AMITY",
+  "MDIST",
+  "AKFA",
+  "WEBSTER",
+  "HARVARD",
+  "STANFORD",
+  "MIT",
+];
+
 // --- 3. KOMPONENTLAR ---
 
 const DraggableMarquee = ({ items, baseVelocity = -0.4 }) => {
@@ -156,11 +177,11 @@ const DraggableMarquee = ({ items, baseVelocity = -0.4 }) => {
           baseX.set(currentX + deltaInUnits);
         }}
       >
-        {[...items, ...items, ...items, ...items, ...items].map((item, i) => (
+        {[...items, ...items, ...items].map((item, i) => (
           <div key={i} className="flex-shrink-0">
             <img
               src={item}
-              alt="Gallery"
+              alt={`Gallery ${i}`}
               draggable="false"
               className="h-[200px] md:h-[300px] w-[280px] md:w-[450px] object-cover rounded-[2rem] pointer-events-none shadow-lg select-none"
             />
@@ -181,6 +202,7 @@ const VideoFeedbackCard = ({ feedback }) => {
             <img
               src={feedback.thumbnail}
               className="w-full h-full object-cover opacity-60"
+              alt={feedback.name}
             />
             <div
               className="absolute inset-0 flex items-center justify-center cursor-pointer"
@@ -288,11 +310,10 @@ const FAQItem = ({ faq }) => {
   );
 };
 
-// --- 4. ASOSIY HOME KOMPONENTI ---
+// --- 4. ASOSIY HOME ---
 
 export default function Home() {
   const consultRef = useRef(null);
-  const [formData, setFormData] = useState({ name: "", phone: "+998" });
   const [status, setStatus] = useState("idle");
 
   const handleSubmit = async (e) => {
@@ -311,7 +332,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <img
             src="https://www.gazeta.uz/media/img/2022/09/HE29hc16640465414375_l.jpg"
-            alt="School"
+            alt="School Hero"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50 dark:bg-black/70"></div>
@@ -320,9 +341,11 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs text-[#39B54A]"
+            className="mb-6 flex items-center justify-center gap-3 tracking-[0.3em] font-black text-[10px] md:text-xs"
           >
-            KELAJAK YETAKCHILARI AKADEMIYASI
+            <span className="w-6 h-[2px] bg-[#39B54A]"></span> KELAJAK
+            YETAKCHILARI AKADEMIYASI{" "}
+            <span className="w-6 h-[2px] bg-[#39B54A]"></span>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -337,8 +360,8 @@ export default function Home() {
               <span className="text-white">LUCK</span>
             </h1>
             <div className="mt-6 text-xl md:text-5xl font-extrabold tracking-tight italic">
-              Kelajak yetakchilari shu yerda <br className="hidden md:block" />
-              <span className="text-[#39B54A]">kamol topadi.</span>
+              Kelajak yetakchilari{" "}
+              <span className="text-[#39B54A]">shu yerda kamol topadi.</span>
             </div>
           </motion.div>
           <motion.div
@@ -399,7 +422,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. STATS SECTION (Markazlashgan) */}
+      {/* 3. STATS SECTION */}
       <section className="py-20 md:py-32 bg-zinc-50 dark:bg-[#080808] border-y dark:border-zinc-900">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16 md:mb-24">
@@ -442,14 +465,6 @@ export default function Home() {
               "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
             ]}
           />
-          <DraggableMarquee
-            baseVelocity={0.4}
-            items={[
-              "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800",
-              "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800",
-              "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800",
-            ]}
-          />
         </div>
       </section>
 
@@ -475,7 +490,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. KONSULTATSIYA SECTION */}
+      {/* 6. UNIVERSITIES SECTION */}
+      <section className="py-20 md:py-32 border-y border-zinc-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-[#050505]">
+        <div className="flex overflow-hidden select-none gap-8 py-4 animate-scroll opacity-50">
+          {universities.concat(universities).map((univ, idx) => (
+            <span
+              key={idx}
+              className="text-2xl md:text-5xl font-black italic uppercase tracking-tighter text-zinc-300 dark:text-zinc-800 px-8"
+            >
+              {univ}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* 7. KONSULTATSIYA SECTION */}
       <section
         ref={consultRef}
         className="py-20 md:py-32 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center"
@@ -495,7 +524,7 @@ export default function Home() {
               </motion.div>
             )}
           </AnimatePresence>
-          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8">
+          <h2 className="text-4xl md:text-7xl font-black dark:text-white uppercase italic mb-8 leading-tight">
             QO'SHILISH VAQTI <span className="text-[#E43E1C]">KELDI.</span>
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -523,33 +552,43 @@ export default function Home() {
             </button>
           </form>
         </div>
-        <div className="h-[450px] md:h-[600px] rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl">
+        <div className="h-[450px] md:h-[600px] rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl relative">
           <iframe
             title="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.912659295463!2d71.22956197613638!3d40.43293285465283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb01b0ac926783%3A0xa103cff84e3dbd4b!2sIstiqbol%20luck%20xususiy%20maktabi!5e0!3m2!1sru!2s!4v1768546214781!5m2!1sru!2s"
+            src={branches.tashkent.map}
             className="w-full h-full grayscale dark:invert"
             allowFullScreen
             loading="lazy"
           ></iframe>
+          <div className="absolute top-6 left-6 right-6 bg-white/90 dark:bg-black/90 backdrop-blur-md p-4 rounded-2xl flex items-center gap-4 shadow-2xl">
+            <div className="w-10 h-10 bg-[#39B54A] rounded-xl flex items-center justify-center text-white">
+              <MapPin size={20} />
+            </div>
+            <div className="text-left">
+              <h3 className="text-sm font-black dark:text-white uppercase leading-none">
+                {branches.tashkent.name}
+              </h3>
+              <p className="text-[10px] text-gray-500 font-bold">
+                {branches.tashkent.address}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 7. FAQ SECTION (Sahifa oxirida) */}
+      {/* 8. FAQ SECTION */}
       <section className="py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6 text-left">
             <div>
               <h4 className="text-[#39B54A] font-bold tracking-[0.4em] uppercase text-[10px] md:text-sm mb-4 italic">
-                Sizni qiziqtirgan savollar
+                Savollaringiz bormi?
               </h4>
               <h2 className="text-4xl md:text-7xl font-black dark:text-white tracking-tighter italic uppercase">
                 KO'P BERILADIGAN{" "}
                 <span className="text-[#E43E1C]">SAVOLLAR</span>
               </h2>
             </div>
-            <p className="max-w-xs text-gray-500 border-l-2 border-[#2E3192] pl-6 italic font-medium text-sm md:text-base">
-              Agar savolingizga javob topmasangiz, bizga murojaat qiling.
-            </p>
           </div>
           <div className="bg-white dark:bg-[#0c0c0c] rounded-[3rem] p-6 md:p-12 border dark:border-zinc-800 shadow-sm">
             {faqs.map((faq, index) => (
@@ -559,10 +598,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CSS qo'shimchalari: Scrollbar yashirish uchun */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-scroll { animation: scroll 30s linear infinite; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `,
